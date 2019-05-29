@@ -34,4 +34,40 @@ public class Binary {
         t.addAll(s);
         return t;
     }
+
+    /**
+     * Given a number in binary(stored as an ArrayList), returns the corresponding int
+     * in decimal form
+     */
+    public static int binaryToInt(ArrayList<Integer> b) {
+        int sum = 0;
+        int len = b.size();
+        for(int i=0; i < len; i++) {
+            sum += b.get(len - 1 - i) * Math.pow(2, i);
+        }
+        return sum;
+    }
+
+    /**
+     * Given a number in binary(stored as an ArrayList) and an int delimiter which specifies
+     * how many bits to consider for each number, returns array of integers in decimal form
+     * Precondition: delimiter > 0
+     */
+    public static int[] binaryToIntDelim(ArrayList<Integer> b, int delimiter) {
+        int nums = b.size()/delimiter;
+        boolean needExtra = false;
+        int[] arr;
+        if(nums < (double)(b.size()/delimiter)) {//in case b.size()/delimiter is a fraction
+            needExtra = true;
+            arr = new int[nums + 1];
+        }
+        else {arr = new int[nums];}
+        for(int i=0; i < nums*delimiter; i+= delimiter) {
+            System.out.println(b.subList(i, i + delimiter));
+            if(i+delimiter == b.size())  arr[i/delimiter] = binaryToInt(new ArrayList<Integer> (b.subList(i, nums*delimiter)));
+            else arr[i/delimiter] = binaryToInt(new ArrayList<Integer> (b.subList(i, i + delimiter)));
+        }
+        if(needExtra) arr[nums] = binaryToInt(new ArrayList<Integer>(b.subList(nums, b.size() - nums*delimiter)));
+        return arr;
+    }
 }
