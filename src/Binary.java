@@ -7,7 +7,7 @@ public class Binary {
     /**
      * Given an integer int, converts it to binary and returns the string
      */
-    public static ArrayList<Integer> intToBinary(int num) { //CONVERT TO ARRAYLIST INTEGER
+    public static ArrayList<Integer> intToBinary(int num) {
         ArrayList<Integer> s = new ArrayList<>();
         if (num == 0) {
             s.add(0);
@@ -55,19 +55,24 @@ public class Binary {
      */
     public static int[] binaryToIntDelim(ArrayList<Integer> b, int delimiter) {
         int nums = b.size()/delimiter;
+
         boolean needExtra = false;
         int[] arr;
-        if(nums < (double)(b.size()/delimiter)) {//in case b.size()/delimiter is a fraction
+        if(b.size() - nums*delimiter > 0) {//in case b.size()/delimiter is a fraction
             needExtra = true;
             arr = new int[nums + 1];
         }
         else {arr = new int[nums];}
-        for(int i=0; i < nums*delimiter; i+= delimiter) {
-            System.out.println(b.subList(i, i + delimiter));
-            if(i+delimiter == b.size())  arr[i/delimiter] = binaryToInt(new ArrayList<Integer> (b.subList(i, nums*delimiter)));
-            else arr[i/delimiter] = binaryToInt(new ArrayList<Integer> (b.subList(i, i + delimiter)));
+
+        for(int i=0; i < nums*delimiter; i+= delimiter) { //iterate through each chunk of the binary code and convert accordingly
+            if(i+delimiter == b.size())  arr[i/delimiter] = binaryToInt(new ArrayList<> (b.subList(i, nums*delimiter)));
+            else arr[i/delimiter] = binaryToInt(new ArrayList<> (b.subList(i, i + delimiter)));
         }
-        if(needExtra) arr[nums] = binaryToInt(new ArrayList<Integer>(b.subList(nums, b.size() - nums*delimiter)));
+
+        /* If need to, include the last chunk the for loop wouldn't get by interpreting the remaining piece as another
+        binary number e.g. "101" delimited by 2 becomes [2, 1] instead of just [2] or [2, 2] (by adding necessary zero) */
+        if(needExtra) arr[nums] = binaryToInt(new ArrayList<>(b.subList(nums*delimiter, b.size())));
+
         return arr;
     }
 }

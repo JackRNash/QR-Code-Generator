@@ -37,12 +37,20 @@ class Tests {
 
     @Test
     void testBinaryToIntDelimiter() {
-        int[] arr1 = new int[2]; arr1[0] = 1; arr1[1] = 0;
+        int[] arr1 = new int[2]; arr1[0] = 1;
         assertArrs(arr1, Binary.binaryToIntDelim(strToArr("10"), 1));
         int[] arr2 = new int[1]; arr2[0] = 2;
         assertArrs(arr2, Binary.binaryToIntDelim(strToArr("10"), 2));
-        int[] arr3 = new int[3]; arr3[0] = 0; arr3[1] = 3; arr3[2] = 2;
+        int[] arr3 = new int[3]; arr3[1] = 3; arr3[2] = 2;
         assertArrs(arr3, Binary.binaryToIntDelim(strToArr("001110"), 2));
+        int[] arr4= new int[4]; arr4[0] = 2; arr4[1] = 1; arr4[2] = 3; arr4[3] = 1;
+        assertArrs(arr4, Binary.binaryToIntDelim(strToArr("1001111"), 2));
+    }
+
+    @Test
+    void testEncodeMsg() {
+        assertEquals(strToArr("0010000001000001110011010100010100101001110111000010111010000000"),
+                Encode.encodeMsg("ABCDE123", strToArr("0010"), 9));
     }
 
     @Test
@@ -79,7 +87,6 @@ class Tests {
     public void assertArrs(int[] arr1, int[] arr2) {
         assert arr1.length == arr2.length;
         for(int i=0; i<arr1.length; i++) {
-            System.out.println(arr1[i] +"\t" + arr2[i]);
             assert arr1[i] == arr2[i];
         }
     }
