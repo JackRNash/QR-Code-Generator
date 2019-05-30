@@ -17,13 +17,13 @@ class Tests {
     }
 
     @Test
-    void testIntToBinaryFixLength() {
-        assertEquals(strToArr("0000"), Binary.intToBinaryFixLength(0, 4));
-        assertEquals(strToArr("0001"), Binary.intToBinaryFixLength(1, 4));
-        assertEquals(strToArr("0010"), Binary.intToBinaryFixLength(2, 4));
-        assertEquals(strToArr("0001010"), Binary.intToBinaryFixLength(10, 7));
-        assertEquals(strToArr("001011"), Binary.intToBinaryFixLength(11, 6));
-        assertEquals(strToArr("000001111"), Binary.intToBinaryFixLength(15, 9));
+    void testIntToBinaryOfLength() {
+        assertEquals(strToArr("0000"), Binary.intToBinaryOfLength(0, 4));
+        assertEquals(strToArr("0001"), Binary.intToBinaryOfLength(1, 4));
+        assertEquals(strToArr("0010"), Binary.intToBinaryOfLength(2, 4));
+        assertEquals(strToArr("0001010"), Binary.intToBinaryOfLength(10, 7));
+        assertEquals(strToArr("001011"), Binary.intToBinaryOfLength(11, 6));
+        assertEquals(strToArr("000001111"), Binary.intToBinaryOfLength(15, 9));
     }
 
     @Test
@@ -68,6 +68,13 @@ class Tests {
         assertEquals(9, Encode.alphaToNumber('9'));
         assertEquals(36, Encode.alphaToNumber(' '));
         assertEquals(42, Encode.alphaToNumber('.'));
+    }
+
+    @Test
+    void testGFMult() {
+        assertEquals(58, Finite.gfMult(29,2));
+        assertEquals(0, Finite.gfMult(0, 10));
+        assertEquals(205, Finite.gfMult(232, 2));
     }
 
 

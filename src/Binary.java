@@ -24,7 +24,7 @@ public class Binary {
     /**
      * Given an integer int, converts it to binary and ensures the string returned is of length len
      */
-    public static ArrayList<Integer> intToBinaryFixLength(int num, int len) {
+    public static ArrayList<Integer> intToBinaryOfLength(int num, int len) {
         ArrayList<Integer> s = intToBinary(num);
         int difference = len - s.size();
         ArrayList<Integer> t = new ArrayList<>();

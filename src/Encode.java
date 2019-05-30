@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -25,10 +24,10 @@ public class Encode {
         for(int i = 0; i < s.length(); i+=2) {
             try {
                 int num = 45 * alphaToNumber(s.charAt(i)) + alphaToNumber(s.charAt(i+1));
-                binary.addAll(Binary.intToBinaryFixLength(num,11));
+                binary.addAll(Binary.intToBinaryOfLength(num,11));
             } catch (IndexOutOfBoundsException e) {
                 int num = alphaToNumber(s.charAt(i)); //?? unsure if this is correct, haven't found proper documentation
-                binary.addAll(Binary.intToBinaryFixLength(num, 6));
+                binary.addAll(Binary.intToBinaryOfLength(num, 6));
             }
         }
         return binary;
@@ -63,9 +62,9 @@ public class Encode {
      */
     public static ArrayList<Integer> encodeMsg(String s, ArrayList<Integer> encode, int delim) {
         ArrayList<Integer> encMsg = new ArrayList<>(encode); //"Header"
-        encMsg.addAll(Binary.intToBinaryFixLength(s.length(), delim)); //Character count
+        encMsg.addAll(Binary.intToBinaryOfLength(s.length(), delim)); //Character count
         encMsg.addAll(encodeAlphaNum(s)); //Message
-        encMsg.addAll(new ArrayList<>(Collections.nCopies(4, 0))); //Terminator, TO IMPLEMENT: no terminator is at capacity
+        encMsg.addAll(new ArrayList<>(Collections.nCopies(4, 0))); //Terminator, TO IMPLEMENT: no terminator when at capacity
 
         //if the encoded message doesn't fill up n delimited blocks of binary, append zeroes until it does
         int num = encMsg.size()/delim;
