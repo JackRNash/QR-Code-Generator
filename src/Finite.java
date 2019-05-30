@@ -17,6 +17,7 @@ public class Finite {
             alphas[i] = x;
             nums[x] = i;
         }
+        nums[1] = 0; //would be 255 otherwise, this is better to work w/
     }
 
     /**
@@ -32,6 +33,48 @@ public class Finite {
         return num;
     }
 
+    /**
+     * Multiplies two polynomials in GF(256)
+     * Input array arr# represents the polynomial  arr#[0]x^n + ... + arr#[n-1]x + arr#[n]
+     * & arr.length = n + 1. Preferably arrays are the smallest possible such that arr[0] = 0
+     */
+    public int[] gfPolyMult(int[] arr1, int[] arr2) {
+        /*Let arr1 be length n + 1, then the polynomial associated w/ arr1 is at most degree n
+          Similar for arr2, hence product polynomial is at most degree (arr1.length - 1) * (arr2.length - 1)
+         */
+        int[] arr = new int[(arr1.length - 1)*(arr2.length - 1)];
+        for(int i = 0; i < arr1.length; i++) {///WORKING ON, INCOMPLETE
+            }
+
+        return arr;
+    }
+
+    /**
+     * Converts the entries in arr from normal numbers to alpha notation where the new entries when raised to the
+     * power of 2 are the old entries. E.g. [2, 4] --> [1, 2]
+     */
+    public int[] toAlpha(int[] arr1) {
+        int[] arr = arr1.clone();
+        for(int i = 0; i < arr.length; i++) {
+            if (arr[i] == 0) arr[i] = -1; //internal code, required or else toAlpha(toNum([0])) == [1] != [0] (NOT ideal)
+
+            else arr[i] = nums[arr[i]];
+        }
+        return arr;
+    }
+
+    /**
+     * Converts the entries in arr from alpha notation to normal numbers where the new entries are the old entries
+     * raised to the power of 2. E.g. [1, 2] --> [2, 4]
+     */
+    public int[] toNum(int[] arr1) {
+        int[] arr = arr1.clone();
+        for(int i = 0; i < arr.length; i++) {
+            if(arr[i] == -1) arr[i] = 0; //internal code, no other way to get 2^x = 0 for some x
+            else arr[i] = alphas[arr[i]];
+        }
+        return arr;
+    }
 
     public void printLookUps() { //method for debugging purposes only
         for (int i = 0; i < 256; i++) System.out.println("i: " + i + "\t2^i: " + alphas[i] + "\tnum: " + nums[i]);

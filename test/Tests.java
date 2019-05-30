@@ -61,13 +61,13 @@ class Tests {
     }
 
     @Test
-    void testAlphaToNum() {
-        assertEquals(10, Encode.alphaToNumber('A'));
-        assertEquals(35, Encode.alphaToNumber('Z'));
-        assertEquals(0, Encode.alphaToNumber('0'));
-        assertEquals(9, Encode.alphaToNumber('9'));
-        assertEquals(36, Encode.alphaToNumber(' '));
-        assertEquals(42, Encode.alphaToNumber('.'));
+    void testCharToInt() {
+        assertEquals(10, Encode.charToInt('A'));
+        assertEquals(35, Encode.charToInt('Z'));
+        assertEquals(0, Encode.charToInt('0'));
+        assertEquals(9, Encode.charToInt('9'));
+        assertEquals(36, Encode.charToInt(' '));
+        assertEquals(42, Encode.charToInt('.'));
     }
 
     @Test
@@ -77,6 +77,22 @@ class Tests {
         assertEquals(205, Finite.gfMult(232, 2));
     }
 
+    @Test
+    void testToAlphaToNum() {
+        Finite f = new Finite();
+
+        int[] arr = new int[3];
+        arr[1] = 2; arr[2] = 4;
+        assertArrs(arr, f.toNum(f.toAlpha(arr)));
+
+        assertArrs(arr, f.toAlpha(f.toNum(arr)));
+
+        int[] arr2 = new int[3]; arr2[1] = 4; arr2[2] = 16;
+        arr[0] = -1;
+        assertArrs(arr, f.toAlpha(arr2));
+
+        assertArrs(arr2, f.toNum(arr));
+    }
 
 
     public ArrayList<Integer> strToArr(String s) { //helper method

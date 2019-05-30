@@ -23,10 +23,10 @@ public class Encode {
         ArrayList<Integer> binary = new ArrayList<>();
         for(int i = 0; i < s.length(); i+=2) {
             try {
-                int num = 45 * alphaToNumber(s.charAt(i)) + alphaToNumber(s.charAt(i+1));
+                int num = 45 * charToInt(s.charAt(i)) + charToInt(s.charAt(i+1));
                 binary.addAll(Binary.intToBinaryOfLength(num,11));
             } catch (IndexOutOfBoundsException e) {
-                int num = alphaToNumber(s.charAt(i)); //?? unsure if this is correct, haven't found proper documentation
+                int num = charToInt(s.charAt(i)); //?? unsure if this is correct, haven't found proper documentation
                 binary.addAll(Binary.intToBinaryOfLength(num, 6));
             }
         }
@@ -37,7 +37,7 @@ public class Encode {
      * Converts a character c to the appropriate number according to this table:
      * http://www.swetake.com/qrcode/qr_table1.html
      */
-    public static int alphaToNumber(char c) { //returns corresponding number for specific chars
+    public static int charToInt(char c) { //returns corresponding number for specific chars
         if(65 <= c && c <= 90) return c - 55; //A --> 10, rest of letters accordingly (c is a letter)
         if(48 <= c && c <= 57) return c - 48; //c is a number
         if(c == '$') return 37;
