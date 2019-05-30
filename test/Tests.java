@@ -94,6 +94,21 @@ class Tests {
         assertArrs(arr2, f.toNum(arr));
     }
 
+    @Test
+    void testGFPolyMult() {
+        Finite f = new Finite();
+        int[] arr1 = new int[2]; arr1[0] = 1; arr1[1] = 1;
+        int[] arr2 = new int[2]; arr2[0] = 2; arr2[1] = 1;
+        int[] arr3 = new int[3]; arr3[0] = 2; arr3[1] = 3; arr3[2] = 1;
+        assertArrs(arr3, f.gfPolyMult(arr1, arr2));
+
+        int[] arr4 = new int[2]; arr4[0] = 4; arr4[1] = 1;
+        int[] arr5 = new int[4]; arr5[3] = 1; arr5[2] = 7; arr5[1] = 14; arr5[0] = 8;
+        assertArrs(arr5, f.gfPolyMult(arr3, arr4));
+
+        assertArrs(new int[3], f.gfPolyMult(new int[2], new int[2])); //handles zeroes properly
+    }
+
 
     public ArrayList<Integer> strToArr(String s) { //helper method
         ArrayList<Integer> arr = new ArrayList<>();
@@ -110,6 +125,7 @@ class Tests {
     public void assertArrs(int[] arr1, int[] arr2) {
         assert arr1.length == arr2.length;
         for(int i=0; i<arr1.length; i++) {
+            //System.out.println("arr1: " + arr1[i] + "\tarr2: " + arr2[i]);
             assert arr1[i] == arr2[i];
         }
     }

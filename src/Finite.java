@@ -1,5 +1,10 @@
 public class Finite {
-    //For working with arithmetic in finite fields(in particular GF(256))
+    /* For working with arithmetic in finite fields(in particular GF(256))
+       NOTE: When I say alpha notation, I mean the number x is really 2^x
+       e.g. 4 in alpha notation is 2. When I say normal form, I just mean
+       numbers are equal in value to the number stated e.g. 4 in normal form is 4
+       Reed Solomon error correcting uses alpha notation for many parts of the process
+     */
 
     private int[] alphas; //look up table where alphas[i] == 2^i in GF(256)
     private int[] nums; //look up table where nums[x] == i where x == 2^i
@@ -35,16 +40,26 @@ public class Finite {
 
     /**
      * Multiplies two polynomials in GF(256)
-     * Input array arr# represents the polynomial  arr#[0]x^n + ... + arr#[n-1]x + arr#[n]
-     * & arr.length = n + 1. Preferably arrays are the smallest possible such that arr[0] = 0
+     * Input array arr# represents the polynomial  arr#[0] + arr#[1]x + ... + arr#[n]x^n
+     * & arr#.length = n + 1. Preferably arrays are the smallest possible such that arr[n] = 0
      */
     public int[] gfPolyMult(int[] arr1, int[] arr2) {
         /*Let arr1 be length n + 1, then the polynomial associated w/ arr1 is at most degree n
-          Similar for arr2, hence product polynomial is at most degree (arr1.length - 1) * (arr2.length - 1)
+          Similar for arr2, hence product polynomial is at most degree (arr1.length - 1) + (arr2.length - 1)
          */
-        int[] arr = new int[(arr1.length - 1)*(arr2.length - 1)];
-        for(int i = 0; i < arr1.length; i++) {///WORKING ON, INCOMPLETE
+        int[] arr = new int[arr1.length + arr2.length - 1];
+        arr1 = toAlpha(arr1);
+        arr2 = toAlpha(arr2);
+        for(int i = 0; i < arr1.length; i++) {
+            if(arr1[i] == -1) continue; //DON'T multiply if corresponding coefficient in original array is 0
+
+            for(int j = 0; j < arr2.length; j++) {
+                if(arr2[j] == -1) continue;
+
+                arr[i+j] = toNum((arr1[i] + arr2[j]) % 255) ^ arr[i+j];
             }
+
+        }
 
         return arr;
     }
@@ -64,6 +79,14 @@ public class Finite {
     }
 
     /**
+     * Converts a normal number n to alpha notation
+     */
+    public int toAlpha(int n) {
+        if (n == 0) return -1; //internal code, required or else toAlpha(toNum([0])) == [1] != [0] (NOT ideal)
+        else return nums[n];
+    }
+
+    /**
      * Converts the entries in arr from alpha notation to normal numbers where the new entries are the old entries
      * raised to the power of 2. E.g. [1, 2] --> [2, 4]
      */
@@ -74,6 +97,14 @@ public class Finite {
             else arr[i] = alphas[arr[i]];
         }
         return arr;
+    }
+
+    /**
+     * Converts a number n in alpha notation to normal form
+     */
+    public int toNum(int n) {
+        if(n == -1) return 0; //internal code, no other way to get 2^x = 0 for some x
+        else return alphas[n];
     }
 
     public void printLookUps() { //method for debugging purposes only
