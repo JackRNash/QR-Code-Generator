@@ -65,6 +65,17 @@ public class Finite {
     }
 
     /**
+     * Returns the generator polynomial of degree deg
+     * Precondition: deg > 0
+     */
+    public int[] genPoly(int deg) {
+        int[] arr = new int[2]; arr[1] = 1; arr[0] = 1; //polynomial is (1 + x)
+        if (deg == 1) return arr;
+        arr[0] = alphas[deg-1]; // polynomial is now (a^(deg-1) + x)
+        return gfPolyMult(genPoly(deg - 1), arr);
+    }
+
+    /**
      * Converts the entries in arr from normal numbers to alpha notation where the new entries when raised to the
      * power of 2 are the old entries. E.g. [2, 4] --> [1, 2]
      */
