@@ -1,5 +1,10 @@
-public class Finite {
-    /* For working with arithmetic in finite fields(in particular GF(256))
+import java.util.ArrayList;
+
+public class ErrorCorrection {
+    /* For creating the error correcting code words
+
+       Lots of methods for working with arithmetic in finite fields(in particular GF(256))
+
        NOTE: When I say alpha notation, I mean the number x is really 2^x
        e.g. 4 in alpha notation is 2. When I say normal form, I just mean
        numbers are equal in value to the number stated e.g. 4 in normal form is 4
@@ -12,7 +17,7 @@ public class Finite {
     /**
      * Fill out look up tables & store in memory
      */
-    public Finite() {
+    public ErrorCorrection() {
         alphas = new int[256];
         nums = new int[256];
         alphas[0] = 1;
@@ -36,6 +41,101 @@ public class Finite {
         int num = n1 * n2;
         if (num > 255) num = num ^ 285;
         return num;
+    }
+
+    /**
+     * Returns the error correcting codes for the supplied message(in normal form, not binary)
+     * and the specified amount of errors that can be corrected
+     */
+    public int[] genErrorCorrWords(int errors, ArrayList<Integer> message) {
+        int[] genPoly = genPoly(errors);
+        int[] msgPoly = new int[Math.max(genPoly.length, message.size())];
+        for(int i = 0; i < message.size(); i++) { //convert to array polynomial format
+            msgPoly[msgPoly.length - 1 - i] = message.get(i);
+        }
+
+        int size = msgPoly.length + genPoly.length - 1;
+        genPoly = resizeArr(genPoly, size);
+        for(int i = 0; i < message.size(); i++) {
+            msgPoly = gfPolyDiv(genPoly, msgPoly, size);
+            genPoly = shiftArr(genPoly);
+        }
+        return msgPoly;
+    }
+
+    /**
+     * Helper method for generating the error correcting code words
+     * Downshift an array, filling in zero in new spot e.g. shiftArr([1, 2, 3, 4]) --> [2, 3, 4, 0]
+     */
+    public static int[] shiftArr(int[] arr) {
+        int[] shifted = new int[arr.length];
+        for(int i = 1; i < arr.length; i++) {
+            shifted[i - 1] = arr[i];
+        }
+        return shifted;
+    }
+
+    /**
+     * Divides polynomial arr2 by arr1 in GF(256) and returns as an array of specified size
+     * Steps:
+     * 1. Convert both arrays to alpha notation
+     * 2. Multiply arr1 by the lead term of arr2(in alpha notation, this is just addition mod 256)
+     * 3. Convert back to normal form
+     * 4. XOR result with arr2 and return     *
+     *
+     * Precondition: arr1.length == arr2.length
+     */
+    public int[] gfPolyDiv(int[] poly1, int[] poly2, int size) {
+        int[] arr1 = resizeArr(poly1.clone(), size); int[] arr2 =resizeArr(poly2.clone(), size); //REVISIT, unsure if clone needed, playing it safe for now
+        int index = leadTerm(arr2);
+        arr1 = toAlpha(arr1);
+        arr2 = toAlpha(arr2);
+
+        int leadAlphaNum = arr2[index];
+        //System.out.println("lead alpha num: " + leadAlphaNum);
+        for(int i = 0; i < arr1.length; i++) {
+            //System.out.println(arr1[i]);
+            if(arr1[i] != -1) { //not supposed to be any coefficient there, internal code required
+                arr1[i] = (arr1[i] + leadAlphaNum) % 255;
+                //System.out.println("arr[" + i +"]: " + arr1[i]);
+            }
+        }
+
+        arr1 = toNum(arr1);
+        arr2 = toNum(arr2);
+        int[] arr = new int[arr1.length];
+
+        for(int i = 0; i < arr.length; i++) {
+            //System.out.println("arr1: " + arr1[i] + "\tarr2: " + arr2[i] + "\tXOR: " + (arr1[i] ^ arr2[i]));
+            arr[i] = arr1[i] ^ arr2[i];
+        }
+        return arr;
+    }
+
+    /**
+     * Helper method for poly division. Moves array into a larger one, right justified
+     * E.g. resizeArr([1, 2], 4) --> [0, 0, 1, 2]
+     */
+    public static int[] resizeArr(int[] arrOld, int newSize) {
+        if(newSize == arrOld.length) return arrOld;
+        int[] arr = new int[newSize];
+        int i = 0;
+        while (i < arrOld.length) {
+            arr[arr.length - i - 1] = arrOld[arrOld.length - i - 1];
+            i++;
+        }
+        return arr;
+    }
+
+    /**
+     * Helper method for poly division. Finds index of lead term of a polynomial
+     * i.e. index of the last non-zero term
+     * Precondition: arr not null
+     */
+    public static int leadTerm(int[] arr) {
+        int i = arr.length - 1;
+        while(arr[i] == 0) i--;
+        return i;
     }
 
     /**
@@ -93,7 +193,7 @@ public class Finite {
      * Converts a normal number n to alpha notation
      */
     public int toAlpha(int n) {
-        if (n == 0) return -1; //internal code, required or else toAlpha(toNum([0])) == [1] != [0] (NOT ideal)
+        if (n == 0) return -1; //internal code, required or else toAlpha(toNum(0)) == 1 != 0 (NOT ideal)
         else return nums[n];
     }
 

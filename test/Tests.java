@@ -72,14 +72,14 @@ class Tests {
 
     @Test
     void testGFMult() {
-        assertEquals(58, Finite.gfMult(29,2));
-        assertEquals(0, Finite.gfMult(0, 10));
-        assertEquals(205, Finite.gfMult(232, 2));
+        assertEquals(58, ErrorCorrection.gfMult(29,2));
+        assertEquals(0, ErrorCorrection.gfMult(0, 10));
+        assertEquals(205, ErrorCorrection.gfMult(232, 2));
     }
 
     @Test
     void testToAlphaToNum() {
-        Finite f = new Finite();
+        ErrorCorrection f = new ErrorCorrection();
 
         int[] arr = new int[3];
         arr[1] = 2; arr[2] = 4;
@@ -96,7 +96,7 @@ class Tests {
 
     @Test
     void testGFPolyMult() {
-        Finite f = new Finite();
+        ErrorCorrection f = new ErrorCorrection();
         int[] arr1 = new int[2]; arr1[0] = 1; arr1[1] = 1;
         int[] arr2 = new int[2]; arr2[0] = 2; arr2[1] = 1;
         int[] arr3 = new int[3]; arr3[0] = 2; arr3[1] = 3; arr3[2] = 1;
@@ -113,7 +113,7 @@ class Tests {
 
     @Test
     void testGenPoly() {
-        Finite f = new Finite();
+        ErrorCorrection f = new ErrorCorrection();
         int[] arr2 = new int[3];
         arr2[0] = 2; arr2[1]=3; arr2[2] = 1;
         assertArrs(arr2, f.genPoly(2));
@@ -125,6 +125,56 @@ class Tests {
         int[] arr3 = new int[8];
         arr3[0] = 21; arr3[1]=102; arr3[2]=238; arr3[3]=149; arr3[4]=146; arr3[5]=229; arr3[6]=87; arr3[7]=0;
         assertArrs(arr3, f.toAlpha(f.genPoly(7)));
+
+        int[] arr4 = {45, 32, 94, 64, 70, 118, 61, 46, 67, 251, 0};
+        assertArrs(arr4, f.toAlpha(f.genPoly(10)));
+    }
+
+    @Test
+    void testGFPolyDiv() {
+        ErrorCorrection ec = new ErrorCorrection();
+        int[] msgArr = {17, 236, 17, 236, 17, 236, 64, 67, 77, 220, 114, 209, 120, 11, 91, 32};
+
+        int[] gen = ec.genPoly(10);
+        int size = gen.length + msgArr.length - 1;
+        int[] arr = ec.gfPolyDiv(gen, msgArr, size);
+//        System.out.println("Size final: " + arr.length + "\tSize gen: " + gen.length + "\tSize msg: " + msgArr.length);
+        int[] arrExp = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 17, 236, 17, 236, 17, 233, 10, 197, 98, 211, 183, 176, 114, 110, 89, 0};
+        assertArrs(arrExp, arr);
+
+//        for(int i = 0; i < gen.length; i++) {
+//            System.out.print(gen[i] + " ");
+//        }
+        //System.out.println();
+        gen = ErrorCorrection.resizeArr(gen, size);
+        gen = ErrorCorrection.shiftArr(gen);
+
+//        for(int i = 0; i < gen.length; i++) {
+//            System.out.print(gen[i] + " ");
+//        }
+        //System.out.println();
+
+        int[] arr2 = ec.gfPolyDiv(gen, arr, size);
+        int[] arrExp2 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 17, 236, 17, 236, 16, 89, 134, 159, 97, 25, 251, 178, 152, 61, 0, 0};
+//        for(int i = 0; i < arr2.length; i++) {
+//            System.out.println(arr2[i]);
+//        }
+        assertArrs(arrExp2, arr2);
+
+    }
+
+    @Test
+    void testGenErrorCorrWords() {
+        ErrorCorrection ec = new ErrorCorrection();
+        ArrayList<Integer> msg = new ArrayList<>();
+        msg.add(32); msg.add(91); msg.add(11); msg.add(120); msg.add(209); msg.add(114); msg.add(220); msg.add(77);
+        msg.add(67); msg.add(64); msg.add(236); msg.add(17); msg.add(236); msg.add(17); msg.add(236); msg.add(17);
+        //System.out.println(msg);
+        int[] msgArr = ec.genErrorCorrWords(10, msg);
+//        for(int i = 0; i < msgArr.length; i++) {
+//            System.out.println(msgArr[i]);
+//        }
+        //assertArrs( , ec.genErrorCorrWords(72, msg));
     }
 
 
@@ -145,7 +195,7 @@ class Tests {
     public void assertArrs(int[] arr1, int[] arr2) {
         assert arr1.length == arr2.length;
         for(int i=0; i<arr1.length; i++) {
-            System.out.println("arr1: " + arr1[i] + "\tarr2: " + arr2[i]);
+            //System.out.println("arr1: " + arr1[i] + "\tarr2: " + arr2[i]);
             assert arr1[i] == arr2[i];
         }
     }
