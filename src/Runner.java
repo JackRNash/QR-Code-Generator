@@ -8,7 +8,9 @@ public class Runner {
 //                if(Math.round(Math.random()) == 1) test[i][j] = 1; //random black vs white squares
 //            }
 //        }
-//        new GUI(test);
+        Matrix m = new Matrix(21);
+        m.addFinders();
+        new GUI(m.getMatrix());
 
     }
 }
