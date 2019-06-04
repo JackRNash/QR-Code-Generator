@@ -31,6 +31,27 @@ public class Matrix {
     }
 
     /**
+     * Travels the same path as draw ring would with the given inputs. Returns true if along this path
+     * all entries in mat are 0 and false if there are any 1 or -1 entries. This method will be useful when adding
+     * alignment patterns because if they would overlap with finding patterns or separators, we skip them
+     */
+    public boolean emptyRing(int size, int x, int y) {
+        for(int i = x; i < size + x; i++) {
+            if(mat[i][y] != 0) return false;
+        }
+        for(int j = y; j < y + size; j++) {
+            if(mat[size + x - 1][j] != 0) return false;
+        }
+        for(int i = size + x - 1; i >= x; i--) {
+            if(mat[i][y + size - 1] != 0) return false;
+        }
+        for(int j = y + size - 1; j >= y; j--) {
+            if(mat[x][j] != 0) return false;
+        }
+        return true;
+    }
+
+    /**
      * Adds the finder patterns in the top right, top left, and bottom left
      */
     public void addFinders() {
@@ -51,6 +72,16 @@ public class Matrix {
         drawRing(1, 3,2, mat.length - 5);
         drawRing(-1, 5, 1, mat.length - 6);
         drawRing(1,7,0, mat.length - 7);
+    }
+
+    /**
+     * If clear, adds alignment pattern centered at (x, y)
+     */
+    public void addAlignmentPat(int x, int y) {
+        if(!emptyRing(5, x - 2, y - 2)) return; //check largest ring, if not clear, skip
+        mat[x][y] = 1;
+        drawRing(-1, 3, x - 1, y - 1);
+        drawRing(1, 5, x - 2, y - 2);
     }
 
 }

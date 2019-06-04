@@ -8,8 +8,12 @@ public class Runner {
 //                if(Math.round(Math.random()) == 1) test[i][j] = 1; //random black vs white squares
 //            }
 //        }
-        Matrix m = new Matrix(21);
+        Matrix m = new Matrix(25);
         m.addFinders();
+        m.addAlignmentPat(6, 6);
+        m.addAlignmentPat(6, 18);
+        m.addAlignmentPat(18, 6);
+        m.addAlignmentPat(18, 18);
         new GUI(m.getMatrix());
 
     }
