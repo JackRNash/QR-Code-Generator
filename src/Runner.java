@@ -10,10 +10,12 @@ public class Runner {
 //        }
         Matrix m = new Matrix(25);
         m.addFinders();
+        m.addSeparators();
         m.addAlignmentPat(6, 6);
         m.addAlignmentPat(6, 18);
         m.addAlignmentPat(18, 6);
         m.addAlignmentPat(18, 18);
+        m.addTimingPats();
         new GUI(m.getMatrix());
 
     }

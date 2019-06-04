@@ -22,9 +22,11 @@ public class Matrix {
         for(int j = y; j < y + size; j++) {
             mat[size + x - 1][j] = color;
         }
+
         for(int i = size + x - 1; i >= x; i--) {
             mat[i][y + size - 1] = color;
         }
+
         for(int j = y + size - 1; j >= y; j--) {
             mat[x][j] = color;
         }
@@ -75,6 +77,23 @@ public class Matrix {
     }
 
     /**
+     * Add the separators next to the finder codes
+     */
+    public void addSeparators() {
+        //top left
+        for(int i = 0; i < 8; i++) mat[i][7] = -1;
+        for(int j = 0; j < 8; j++) mat[7][j] = -1;
+
+        //top right
+        for(int i = mat.length - 8; i < mat.length; i++) mat[i][7] = -1;
+        for(int j = 0; j < 8; j++) mat[mat.length - 8][j] = -1;
+
+        //bottom left
+        for(int i = 0; i < 8; i++) mat[i][mat.length - 8] = -1;
+        for(int j = mat.length - 8; j < mat.length; j++) mat[7][j] = -1;
+    }
+
+    /**
      * If clear, adds alignment pattern centered at (x, y)
      */
     public void addAlignmentPat(int x, int y) {
@@ -84,4 +103,20 @@ public class Matrix {
         drawRing(1, 5, x - 2, y - 2);
     }
 
+    /**
+     * Adds the timing patterns on the left and top side of the QR code
+     */
+    public void addTimingPats() {
+        //vertical timing pat
+        for(int j = 8; j < mat.length - 8; j++) {
+            if(j % 2 == 0) mat[6][j] = 1;
+            else mat[6][j] = -1;
+        }
+
+        //horizontal timing pat
+        for(int i = 8; i < mat.length - 8 ; i++){
+            if(i % 2 == 0) mat[i][6] = 1;
+            else mat[i][6] = -1;
+        }
+    }
 }

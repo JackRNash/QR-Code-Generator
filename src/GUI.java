@@ -47,7 +47,8 @@ class Cell extends JPanel{
             i = rec.x/GUI.SQUARE_SIZE;
             j = rec.y/GUI.SQUARE_SIZE;
             if (mat[i][j] == 1) g.setColor(Color.black);
-            else g.setColor(Color.white);
+            else if(mat[i][j] == -1) g.setColor(Color.white);
+            else g.setColor(Color.gray);
             g2.fill(rec);
         }
     }
