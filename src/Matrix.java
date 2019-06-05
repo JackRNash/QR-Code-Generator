@@ -1,8 +1,13 @@
+import java.util.ArrayList;
+
 public class Matrix {
     // For constructing the matrix that represents the QR code and will eventually be fed into the GUI
     // 1 represents black, -1 represents white
     private int[][] mat;
 
+    /**
+     * Creates the matrix associated with a QR code of specified size(min is 21)
+     */
     public Matrix(int size) {
         mat = new int[size][size];
     }
@@ -77,20 +82,30 @@ public class Matrix {
     }
 
     /**
-     * Add the separators next to the finder codes
+     * Add the separators next to the finder codes. Also adds the dark module and reserves area for
+     * version & format information. MUST ADD BEFORE THE TIMING PATTERN
      */
     public void addSeparators() {
-        //top left
+        //top left separator
         for(int i = 0; i < 8; i++) mat[i][7] = -1;
         for(int j = 0; j < 8; j++) mat[7][j] = -1;
 
-        //top right
+        //top right separator
         for(int i = mat.length - 8; i < mat.length; i++) mat[i][7] = -1;
         for(int j = 0; j < 8; j++) mat[mat.length - 8][j] = -1;
 
-        //bottom left
+        //bottom left separator
         for(int i = 0; i < 8; i++) mat[i][mat.length - 8] = -1;
         for(int j = mat.length - 8; j < mat.length; j++) mat[7][j] = -1;
+
+        //dark module
+        mat[8][mat.length - 8] = 1;
+
+        //reserved spaces
+        for(int j = mat.length - 7; j <  mat.length; j++) mat[8][j] = 2; //different color for debugging purposes
+        for(int i = 0; i < 9; i++) mat[i][8] = 2;
+        for(int j = 0; j < 8; j++) mat[8][j] = 2;
+        for(int i = mat.length - 8; i < mat.length; i++) mat[i][8] = 2;
     }
 
     /**
@@ -118,5 +133,55 @@ public class Matrix {
             if(i % 2 == 0) mat[i][6] = 1;
             else mat[i][6] = -1;
         }
+    }
+
+    /**
+     *
+     * Precondition: binary.size() <= the capacity of the QR code
+     */
+    public void inputBinary(ArrayList<Integer> binary) {
+        int index = 1; int i = mat.length - 1 - 1; int j = mat.length - 1;
+        int direction = -1; //-1 for up, +1 for down
+        int len = binary.size();
+
+        if(mat[i+1][j] == 0 && len > 0) mat[i + 1][j] = binaryToColor(binary.get(0)); //skipped over by structure of while loop
+        else index = 0;
+
+        //Must maintain   i >= 0 && j >= 0 && i < mat.length && j < mat.length
+        while(index < len) {
+            if(i >= 0 && j >= 0 && i < mat.length && j < mat.length && mat[i][j] == 0) {
+                mat[i][j] = binaryToColor(binary.get(index));
+                index++;
+            }
+
+            j += direction; i+= 1;
+
+            if(i >= 0 && j >= 0 && i < mat.length && j < mat.length && mat[i][j] == 0 && index < len) {
+                mat[i][j] = binaryToColor(binary.get(index));
+                index++;
+                i+= -1;
+            } else if(j == mat.length) {
+                direction = -1; //go up
+                i -= 3;
+                if(i == 5) i--; //skip vert timing pattern
+
+            } else if(j == -1) {
+                direction = 1;//go down
+                i -= 3;
+                if(i == 5) i--; //skip vert timing pattern
+            } else {
+                i+= -1;
+            }
+            //System.out.println("i: " + i + "\tj: " + j + "\tdirection: " + direction);
+
+        }
+    }
+
+    /**
+     * Helper method for coloring the graph
+     */
+    public int binaryToColor(int binary) {
+        if(binary == 1) return 1; //black
+        else return -1; //white
     }
 }

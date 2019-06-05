@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Runner {
     //purely for running methods & testing purposes
     public static void main(String[] args) {
@@ -11,12 +13,30 @@ public class Runner {
         Matrix m = new Matrix(25);
         m.addFinders();
         m.addSeparators();
-        m.addAlignmentPat(6, 6);
-        m.addAlignmentPat(6, 18);
-        m.addAlignmentPat(18, 6);
+//        m.addAlignmentPat(6, 6);
+//        m.addAlignmentPat(6, 18);
+//        m.addAlignmentPat(18, 6);
         m.addAlignmentPat(18, 18);
         m.addTimingPats();
+        ArrayList<Integer> nums = new ArrayList<>();
+
+        for(int i = 0; i < 118; i ++) {
+            //int x = (int)(2*Math.random());
+            nums.add(1);
+        }
+
+        ArrayList<Integer> nums2 = strToArrList("010111001111110011000001110");
+
+        m.inputBinary(nums);
         new GUI(m.getMatrix());
 
+    }
+
+    public static ArrayList<Integer> strToArrList(String s) { //helper method
+        ArrayList<Integer> arr = new ArrayList<>();
+        for(char c: s.toCharArray()) {
+            arr.add(Integer.parseInt(c + ""));
+        }
+        return arr;
     }
 }
