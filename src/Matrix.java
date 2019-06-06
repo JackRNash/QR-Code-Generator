@@ -10,6 +10,9 @@ public class Matrix {
      */
     public Matrix(int size) {
         mat = new int[size][size];
+        addFinders();
+        addSeparators();
+        addTimingPats();
     }
 
     public int[][] getMatrix() {
@@ -132,6 +135,33 @@ public class Matrix {
         for(int i = 8; i < mat.length - 8 ; i++){
             if(i % 2 == 0) mat[i][6] = 1;
             else mat[i][6] = -1;
+        }
+    }
+
+    /**
+     * Takes in a size 15 ArrayList that contains information on the error correction level and
+     * mask chosen, and inputs this information in the corresponding parts of the QR code
+     */
+    public void addErrorCorrAndMaskInfo(ArrayList<Integer> input) {
+        //bottom left
+        for(int i = 0; i < 7; i++) {
+            mat[8][mat.length - 1 - i] = binaryToColor(input.get(i));
+        }
+        int offset = 0;
+
+        //top left
+        for(int i = 0; i < 8; i ++) {
+            mat[i + offset][8] = binaryToColor(input.get(i));
+            if(i == 5) offset = 1;
+        }
+        mat[8][7] = binaryToColor(input.get(8));
+        for(int i = 0; i < 6; i++) {
+            mat[8][5 - i] = binaryToColor(input.get(9 + i));
+        }
+
+        //top right
+        for(int i = 0; i < 8; i++) {
+            mat[mat.length - 8 + i][8] = binaryToColor(input.get(7 + i));
         }
     }
 

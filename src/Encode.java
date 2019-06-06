@@ -8,6 +8,7 @@ public class Encode {
     private char errorCorr;
 
     public Encode(String message, ArrayList<Integer> encode, char errorCorr) {
+        //TO DO ONCE FINISHED, CHECK IF ANY BENEFIT TO HAVING THIS CONSTRUCTOR AND FIELDS, OR SHOULD JUST DELETE
         msg = message.toUpperCase();
         encode_type = encode;
         this.errorCorr = errorCorr;
