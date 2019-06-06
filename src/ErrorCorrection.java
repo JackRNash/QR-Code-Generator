@@ -60,7 +60,14 @@ public class ErrorCorrection {
             msgPoly = gfPolyDiv(genPoly, msgPoly, size);
             genPoly = shiftArr(genPoly);
         }
-        return msgPoly;
+
+        int i = leadTerm(msgPoly);
+        int[] arr = new int[i + 1];
+        for(int j = 0; j < i + 1; j++) {
+            arr[j] = msgPoly[j];
+        }
+
+        return arr;
     }
 
     /**

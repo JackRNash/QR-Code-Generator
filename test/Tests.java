@@ -33,6 +33,8 @@ class Tests {
         assertEquals(1, Binary.binaryToInt(strToArrList("1")));
         assertEquals(6, Binary.binaryToInt(strToArrList("00110")));
         assertEquals(7, Binary.binaryToInt(strToArrList("111")));
+        int[] arr = {32, 65, 205, 69, 41, 220, 46, 128, 236};
+        assertArrs(arr, Binary.binaryToIntDelim(strToArrList("0010000001000001110011010100010100101001110111000010111010000000"), 8));
     }
 
     @Test
@@ -47,11 +49,11 @@ class Tests {
         assertArrs(arr4, Binary.binaryToIntDelim(strToArrList("1001111"), 2));
     }
 
-    @Test
+    //@Test
     void testEncodeMsg() {
         assertEquals(strToArrList("0010000001000001110011010100010100101001110111000010111010000000"),
                 Encode.encodeMsg("ABCDE123", strToArrList("0010"), 9));
-    }
+            }
 
     @Test
     void testEncodeAlphaNum() {
@@ -171,10 +173,18 @@ class Tests {
         msg.add(67); msg.add(64); msg.add(236); msg.add(17); msg.add(236); msg.add(17); msg.add(236); msg.add(17);
         //System.out.println(msg);
         int[] msgArr = ec.genErrorCorrWords(10, msg);
-//        for(int i = 0; i < msgArr.length; i++) {
-//            System.out.println(msgArr[i]);
+        for(int i = 0; i < msgArr.length; i++) {
+            System.out.println(msgArr[i]);
+        }
+        int[] test = {23, 93, 226, 231, 215, 235, 119, 39, 35, 196};
+        assertArrs(test, msgArr);
+
+
+//        ArrayList<Integer> msg2 = new ArrayList<>();
+//        msg2.add()
+//        for(int i = 0; i < msgArr2.length; i++) {
+//            System.out.println(msgArr2[i]);
 //        }
-        //assertArrs( , ec.genErrorCorrWords(72, msg));
     }
 
 

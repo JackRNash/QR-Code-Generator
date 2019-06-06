@@ -23,25 +23,20 @@ public class Runner {
             nums.add(1);
         }
 
-        ArrayList<Integer> nums2 = strToArrList("010111001111110011000001110");
-
+        ArrayList<Integer> nums2 = Encode.encodeMsg("ABCDE123", Encode.strToArrList("0010"), 9);
+        System.out.println(nums2.size());
 //        ArrayList<Integer> errAndMask = strToArrList("01100");
 //        ErrorCorrection ec = new ErrorCorrection();
 //        int[] errCorr = ec.genPoly(10);
 //        for(int i = 0; i < errCorr.length; i++) {
 //            System.out.println(errCorr[i]);
 //        }
-        m.addErrorCorrAndMaskInfo(strToArrList("110011000101111"));
-        m.inputBinary(nums);
+        m.addErrorCorrAndMaskInfo(Encode.strToArrList("111011111000100"));
+        m.inputBinary(nums2);
+        m.applyFirstMask();
         new GUI(m.getMatrix());
 
     }
 
-    public static ArrayList<Integer> strToArrList(String s) { //helper method
-        ArrayList<Integer> arr = new ArrayList<>();
-        for(char c: s.toCharArray()) {
-            arr.add(Integer.parseInt(c + ""));
-        }
-        return arr;
-    }
+
 }

@@ -58,27 +58,61 @@ public class Encode {
      * ArrayList<Integer> encode: type of message(number, alphanum, 8bit, or Kanj)
      * int delim: how to delimit message(determined by type of message)
      *
-     * NOTE: Right now, only supports alphanumeric and have yet to implement the error correction
-     * part
+     * NOTE: Right now, only supports alphanumeric
      */
     public static ArrayList<Integer> encodeMsg(String s, ArrayList<Integer> encode, int delim) {
         ArrayList<Integer> encMsg = new ArrayList<>(encode); //"Header"
         encMsg.addAll(Binary.intToBinaryOfLength(s.length(), delim)); //Character count
         encMsg.addAll(encodeAlphaNum(s)); //Message
-        encMsg.addAll(new ArrayList<>(Collections.nCopies(4, 0))); //Terminator, TO IMPLEMENT: no terminator when at capacity
+        int size = encMsg.size();
+        if(size + 4 < 19 * delim) { //for now, assume it's a 1-L QR code
+            encMsg.addAll(new ArrayList<>(Collections.nCopies(4, 0))); //Terminator, TO IMPLEMENT: no terminator when at capacity
+        } else if(size < 19 * delim) { //room for some of the terminator, but not all of it, so add as many as possible
+            encMsg.addAll(new ArrayList<>(Collections.nCopies(19*delim - size, 0)));
+        }
 
         //if the encoded message doesn't fill up n delimited blocks of binary, append zeroes until it does
-        int num = encMsg.size()/delim;
-        if(encMsg.size() - delim*num > 0) {
-            while(encMsg.size() <= (num + 1)*delim) {
-                encMsg.add(0);
-            }
+        int num = encMsg.size()/8;
+        while(encMsg.size() < (num + 1)*8) {
+            encMsg.add(0);
         }
         //TO IMPLEMENT: if enc msg isn't at capacity, fill with alternating 11101100 & 00010001
+        //for now, assume 1-L QR code
+        ArrayList<Integer> one = strToArrList("11101100"); ArrayList<Integer> two = strToArrList("00010001");
+        while(encMsg.size()/8 < 19) {
+            encMsg.addAll(one);
+            if(encMsg.size()/8 < 19) {
+                encMsg.addAll(two);
+            }
+        }
 
-        //TO IMPLEMENT: find error correcting codes, append
+        ArrayList<Integer> msgArrList = new ArrayList<>();
+        int[] msgArr = Binary.binaryToIntDelim(encMsg, 8);
+        for(int i = 0; i < msgArr.length; i++) {
+            msgArrList.add(msgArr[i]);
+        }
+
+        //TO FINISH: find error correcting codes, append (Need method for finding num of errors to correct)
+        ErrorCorrection ec = new ErrorCorrection();
+        int[] arr = ec.genErrorCorrWords(7, msgArrList); //TOO BIG, DON'T KNOW WHY
+        for(int i = arr.length - 1; i >= 0; i--) {
+            encMsg.addAll(Binary.intToBinaryOfLength(arr[i], 8));
+        }
+
+        int[] arrTest = Binary.binaryToIntDelim(encMsg, 8);
+        for(int i = 0; i < arr.length; i++) {
+            System.out.println(arrTest[i]);
+        }
 
         return encMsg;
+    }
+
+    public static ArrayList<Integer> strToArrList(String s) { //helper method
+        ArrayList<Integer> arr = new ArrayList<>();
+        for(char c: s.toCharArray()) {
+            arr.add(Integer.parseInt(c + ""));
+        }
+        return arr;
     }
 
 }
