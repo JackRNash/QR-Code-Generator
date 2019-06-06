@@ -24,7 +24,7 @@ public class Runner {
         }
 
         ArrayList<Integer> nums2 = Encode.encodeMsg("ABCDE123", Encode.strToArrList("0010"), 9);
-        System.out.println(nums2.size());
+
 //        ArrayList<Integer> errAndMask = strToArrList("01100");
 //        ErrorCorrection ec = new ErrorCorrection();
 //        int[] errCorr = ec.genPoly(10);

@@ -76,6 +76,7 @@ public class Encode {
         while(encMsg.size() < (num + 1)*8) {
             encMsg.add(0);
         }
+
         //TO IMPLEMENT: if enc msg isn't at capacity, fill with alternating 11101100 & 00010001
         //for now, assume 1-L QR code
         ArrayList<Integer> one = strToArrList("11101100"); ArrayList<Integer> two = strToArrList("00010001");
@@ -85,7 +86,7 @@ public class Encode {
                 encMsg.addAll(two);
             }
         }
-
+        //Create ArrayList of message, converted from binary to decimal form
         ArrayList<Integer> msgArrList = new ArrayList<>();
         int[] msgArr = Binary.binaryToIntDelim(encMsg, 8);
         for(int i = 0; i < msgArr.length; i++) {
@@ -94,15 +95,15 @@ public class Encode {
 
         //TO FINISH: find error correcting codes, append (Need method for finding num of errors to correct)
         ErrorCorrection ec = new ErrorCorrection();
-        int[] arr = ec.genErrorCorrWords(7, msgArrList); //TOO BIG, DON'T KNOW WHY
+        int[] arr = ec.genErrorCorrWords(7, msgArrList);
         for(int i = arr.length - 1; i >= 0; i--) {
             encMsg.addAll(Binary.intToBinaryOfLength(arr[i], 8));
         }
 
-        int[] arrTest = Binary.binaryToIntDelim(encMsg, 8);
-        for(int i = 0; i < arr.length; i++) {
-            System.out.println(arrTest[i]);
-        }
+//        int[] arrTest = Binary.binaryToIntDelim(encMsg, 8);
+//        for(int i = 0; i < arr.length; i++) {
+//            System.out.println(arrTest[i]);
+//        }
 
         return encMsg;
     }
