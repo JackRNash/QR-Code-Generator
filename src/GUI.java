@@ -4,14 +4,21 @@ import java.util.ArrayList;
 
 public class GUI extends JFrame {
     public static final int SQUARE_SIZE = 20; //size of a block in QR code in pixels
-    private int[][] mat; //stores the QR code as an n x n matrix of zeroes and ones
+    private int[][] quietMat; //stores the QR code as an n x n matrix of zeroes and ones
 
     public GUI(int[][] matrix) {
         super("QR Code");
-        Cell cells = new Cell(matrix);
 
-        mat = matrix;
-        int squares = mat.length;
+        //transfer information into new matrix with a 2 cell border of zeroes for the quiet zone required for QR codes
+        int[][] quietMat = new int[matrix.length + 4][matrix.length + 4];
+        for(int i = 0; i < matrix.length; i++) {
+            for(int j = 0; j < matrix.length; j++) {
+                quietMat[i+2][j+2] = matrix[i][j];
+            }
+        }
+        Cell cells = new Cell(quietMat);
+
+        int squares = quietMat.length;
         int QRdim = squares * SQUARE_SIZE;
 
         JFrame frame = new JFrame();
