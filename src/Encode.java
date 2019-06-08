@@ -21,6 +21,7 @@ public class Encode {
      * Encodes an alphanumeric String s and returns it as an integer array of ones and zeroes(binary representation)
      */
     public static ArrayList<Integer> encodeAlphaNum(String s) {
+        s = s.toUpperCase();
         ArrayList<Integer> binary = new ArrayList<>();
         for(int i = 0; i < s.length(); i+=2) {
             try {
@@ -71,6 +72,7 @@ public class Encode {
             encMsg.addAll(new ArrayList<>(Collections.nCopies(19*delim - size, 0)));
         }
 
+
         //if the encoded message doesn't fill up n delimited blocks of binary, append zeroes until it does
         int num = encMsg.size()/8;
         while(encMsg.size() < (num + 1)*8) {
@@ -99,11 +101,6 @@ public class Encode {
         for(int i = arr.length - 1; i >= 0; i--) {
             encMsg.addAll(Binary.intToBinaryOfLength(arr[i], 8));
         }
-
-//        int[] arrTest = Binary.binaryToIntDelim(encMsg, 8);
-//        for(int i = 0; i < arr.length; i++) {
-//            System.out.println(arrTest[i]);
-//        }
 
         return encMsg;
     }

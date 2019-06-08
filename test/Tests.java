@@ -33,33 +33,37 @@ class Tests {
         assertEquals(1, Binary.binaryToInt(strToArrList("1")));
         assertEquals(6, Binary.binaryToInt(strToArrList("00110")));
         assertEquals(7, Binary.binaryToInt(strToArrList("111")));
-        int[] arr = {32, 65, 205, 69, 41, 220, 46, 128, 236};
-        assertArrs(arr, Binary.binaryToIntDelim(strToArrList("0010000001000001110011010100010100101001110111000010111010000000"), 8));
-    }
+            }
 
     @Test
-    void testBinaryToIntDelimiter() {
-        int[] arr1 = new int[2]; arr1[0] = 1;
+    void testBinaryToIntDelim() {
+        int[] arr1 = {1,0};
         assertArrs(arr1, Binary.binaryToIntDelim(strToArrList("10"), 1));
-        int[] arr2 = new int[1]; arr2[0] = 2;
+        int[] arr2 = {2};
         assertArrs(arr2, Binary.binaryToIntDelim(strToArrList("10"), 2));
         int[] arr3 = new int[3]; arr3[1] = 3; arr3[2] = 2;
         assertArrs(arr3, Binary.binaryToIntDelim(strToArrList("001110"), 2));
         int[] arr4= new int[4]; arr4[0] = 2; arr4[1] = 1; arr4[2] = 3; arr4[3] = 1;
         assertArrs(arr4, Binary.binaryToIntDelim(strToArrList("1001111"), 2));
-    }
 
-    //@Test
-    void testEncodeMsg() {
-        assertEquals(strToArrList("0010000001000001110011010100010100101001110111000010111010000000"),
-                Encode.encodeMsg("ABCDE123", strToArrList("0010"), 9));
+        int[] arr = {32, 65, 205, 69, 41, 220, 46, 128, 236};
+        assertArrs(arr, Binary.binaryToIntDelim(strToArrList("001000000100000111001101010001010010100111011100001011101000000011101100"), 8));
+
+        for(int num = 0; num < 256; num++) {
+            for(int len = 8; len < 12; len++) {
+                assertEquals(num, Binary.binaryToIntDelim(Binary.intToBinaryOfLength(num, len), len)[0]);
             }
+        }
+
+    }
 
     @Test
     void testEncodeAlphaNum() {
         assertEquals(strToArrList("00111001101010001010010100111011100001011101"),
                 Encode.encodeAlphaNum("ABCDE123"));
         assertEquals(strToArrList("00111001101"), Encode.encodeAlphaNum("AB"));
+        ArrayList<Integer> arr = new ArrayList<>();
+        assertEquals(strToArrList("0110000101101111000110100010111001011011100010011010100001101"), Encode.encodeAlphaNum("HELLO WORLD"));
     }
 
     @Test
@@ -173,9 +177,9 @@ class Tests {
         msg.add(67); msg.add(64); msg.add(236); msg.add(17); msg.add(236); msg.add(17); msg.add(236); msg.add(17);
         //System.out.println(msg);
         int[] msgArr = ec.genErrorCorrWords(10, msg);
-        for(int i = 0; i < msgArr.length; i++) {
-            System.out.println(msgArr[i]);
-        }
+//        for(int i = 0; i < msgArr.length; i++) {
+//            System.out.println(msgArr[i]);
+//        }
         int[] test = {23, 93, 226, 231, 215, 235, 119, 39, 35, 196};
         assertArrs(test, msgArr);
 
@@ -186,7 +190,6 @@ class Tests {
 //            System.out.println(msgArr2[i]);
 //        }
     }
-
 
 
 

@@ -55,15 +55,24 @@ public class ErrorCorrection {
         }
 
         int size = msgPoly.length + genPoly.length - 1;
+
+        int leadTermPrev = leadTerm(resizeArr(msgPoly, size)); //need to keep track of how many lead terms were
+                                                               //cancelled out in each step of division
         genPoly = resizeArr(genPoly, size);
-        for(int i = 0; i < message.size(); i++) {
+
+        while(leadTermPrev >= errors) {
             msgPoly = gfPolyDiv(genPoly, msgPoly, size);
-            genPoly = shiftArr(genPoly);
+            for(int j = 0; j < (leadTermPrev - leadTerm(msgPoly)); j++) { //shift generator polynomial # of lead terms
+                                                                          // cancelled out in this step
+                genPoly = shiftArr(genPoly);
+            }
+            leadTermPrev = leadTerm(msgPoly);
         }
 
-        int i = leadTerm(msgPoly);
-        int[] arr = new int[i + 1];
-        for(int j = 0; j < i + 1; j++) {
+        //Move into a smaller array(know that there are errors code words total, and that they are
+        //the left most entries in msgPoly
+        int[] arr = new int[errors];
+        for(int j = 0; j < errors; j++) {
             arr[j] = msgPoly[j];
         }
 
@@ -104,7 +113,7 @@ public class ErrorCorrection {
             //System.out.println(arr1[i]);
             if(arr1[i] != -1) { //not supposed to be any coefficient there, internal code required
                 arr1[i] = (arr1[i] + leadAlphaNum) % 255;
-                //System.out.println("arr[" + i +"]: " + arr1[i]);
+//                System.out.println("arr[" + i +"]: " + arr1[i]);
             }
         }
 
@@ -113,7 +122,7 @@ public class ErrorCorrection {
         int[] arr = new int[arr1.length];
 
         for(int i = 0; i < arr.length; i++) {
-            //System.out.println("arr1: " + arr1[i] + "\tarr2: " + arr2[i] + "\tXOR: " + (arr1[i] ^ arr2[i]));
+//            System.out.println("arr1: " + arr1[i] + "\tarr2: " + arr2[i] + "\tXOR: " + (arr1[i] ^ arr2[i]));
             arr[i] = arr1[i] ^ arr2[i];
         }
         return arr;
