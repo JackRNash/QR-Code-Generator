@@ -134,10 +134,10 @@ public class Encode {
      * L, M, Q, & H respectively. E.g. alphanumCapacityLookup(1) --> [25, 20, 16, 10]
      * So the character capacity of version 1 w/ error correction level l is 25
      * Unfortunately had to be hard coded, no formula exists(as far as I know)
-     * Precondition: 1 <= version <= 40
+     * Precondition: 1 <= version <= 41 (41 not a valid version #, just used for error purposes)
      */
     public static int[] alphanumCapacityLookup(int version) {
-       int[] arr = new int[0];
+       int[] arr = new int[4];
 
        switch(version) {
            case 1:
@@ -179,7 +179,7 @@ public class Encode {
            case 19:
                arr = new int[] {1153, 909, 644, 493}; break;
            case 20:
-               arr = new int[] {1249, 970, 702, 557}; break; //
+               arr = new int[] {1249, 970, 702, 557}; break;
            case 21:
                arr = new int[] {1352, 1035, 742, 587}; break;
            case 22:
@@ -219,7 +219,7 @@ public class Encode {
            case 39:
                arr = new int[] {4087, 3220, 2298, 1774}; break;
            case 40:
-               arr = new int[] {4296, 3391, 2420, 1852}; break;
+               arr = new int[] {4296, 3391, 2420, 1852}; break; //last break not needed, just for clarity
        }
 
        return arr;
