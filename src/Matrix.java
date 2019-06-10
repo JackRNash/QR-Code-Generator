@@ -122,6 +122,18 @@ public class Matrix {
     }
 
     /**
+     * Adds all appropriate alignment patterns for a given version
+     */
+    public void addAllAlignmentPats(int version) {
+        int[] arr = alignmentLookup(version);
+        for(int i = 0; i < arr.length; i++) {
+            for(int j = 0; j < arr.length; j++) {
+                addAlignmentPat(arr[i], arr[j]);
+            }
+        }
+    }
+
+    /**
      * Adds the timing patterns on the left and top side of the QR code
      */
     public void addTimingPats() {
@@ -232,5 +244,99 @@ public class Matrix {
     public int binaryToColorSpecial(int binary) {
         if(binary == 1) return 2; //black
         else return -2; //white
+    }
+
+
+    /**
+     * Method for finding the coordinates of alignment patterns(unfortunately has to be hard coded, no
+     * formula for it). Given a version, returns an array of different ints and all POSSIBLE coordinates
+     * of alignment patterns are all combinations of these numbers(remember if a finder pattern, timing belt etc.)
+     * is in the way, the alignment pattern is not drawn
+     * E.g. alignmentLookup(2) = [6, 18] so all possible locations of alignment patterns are (6,6), (6,18), (18,6), (18,18)
+     * Precondition: 2 <= verison <= 40 (version 1 has no alignment patterns)
+     */
+    public static int[] alignmentLookup(int version) {
+        int[] arr = new int[0];
+        switch(version) {
+            case 2:
+                arr = new int[] {6, 18}; break;
+            case 3:
+                arr = new int[] {6, 22}; break;
+            case 4:
+                arr = new int[] {6, 26}; break;
+            case 5:
+                arr = new int[] {6, 30}; break;
+            case 6:
+                arr = new int[] {6, 34}; break;
+            case 7:
+                arr = new int[] {6, 22, 38}; break;
+            case 8:
+                arr = new int[] {6, 24, 42}; break;
+            case 9:
+                arr = new int[] {6, 26, 46}; break;
+            case 10:
+                arr = new int[] {6, 28, 50}; break;
+            case 11:
+                arr = new int[] {6, 30, 54}; break;
+            case 12:
+                arr = new int[] {6, 32, 58}; break;
+            case 13:
+                arr = new int[] {6, 34, 62}; break;
+            case 14:
+                arr = new int[] {6, 26, 46, 66}; break;
+            case 15:
+                arr = new int[] {6, 26, 48, 70}; break;
+            case 16:
+                arr = new int[] {6, 26, 50, 74}; break;
+            case 17:
+                arr = new int[] {6, 30, 54, 78}; break;
+            case 18:
+                arr = new int[] {6, 30, 56, 82}; break;
+            case 19:
+                arr = new int[] {6, 30, 58, 86}; break;
+            case 20:
+                arr = new int[] {6, 34, 62, 90}; break;
+            case 21:
+                arr = new int[] {6, 28, 50, 72, 94}; break;
+            case 22:
+                arr = new int[] {6, 26, 50, 74, 98}; break;
+            case 23:
+                arr = new int[] {6, 30, 54, 78, 102}; break;
+            case 24:
+                arr = new int[] {6, 28, 54, 80, 106}; break;
+            case 25:
+                arr = new int[] {6, 32, 58, 84, 110}; break;
+            case 26:
+                arr = new int[] {6, 30, 58, 86, 114}; break;
+            case 27:
+                arr = new int[] {6, 34, 62, 90, 118}; break;
+            case 28:
+                arr = new int[] {6, 26, 50, 74, 98, 122}; break;
+            case 29:
+                arr = new int[] {6, 30, 54, 78, 102, 126}; break;
+            case 30:
+                arr = new int[] {6, 26, 52, 78, 104, 130}; break; //
+            case 31:
+                arr = new int[] {6, 30, 56, 82, 108, 134}; break;
+            case 32:
+                arr = new int[] {6, 34, 60, 86, 112, 138}; break;
+            case 33:
+                arr = new int[] {6, 30, 58, 86, 114, 142}; break;
+            case 34:
+                arr = new int[] {6, 34, 62, 90, 118, 146}; break;
+            case 35:
+                arr = new int[] {6, 30, 54, 78, 102, 126, 150}; break;
+            case 36:
+                arr = new int[] {6, 24, 50, 76, 102, 128, 154}; break;
+            case 37:
+                arr = new int[] {6, 28, 54, 80, 106, 132, 158}; break;
+            case 38:
+                arr = new int[] {6, 32, 58, 84, 110, 136, 162}; break;
+            case 39:
+                arr = new int[] {6, 26, 54, 82, 110, 138, 166}; break;
+            case 40:
+                arr = new int[] {6, 30, 58, 86, 114, 142, 170}; break; //break for clarity, not necessary
+        }
+        return arr;
     }
 }
