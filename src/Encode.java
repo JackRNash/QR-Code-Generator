@@ -114,6 +114,22 @@ public class Encode {
     }
 
     /**
+     * Given an amount of characters and an error correction level(0-3 inclusive representing L, M, Q, H respectively)
+     * finds the minimum version that has the capacity for this
+     * Returns 41 if the message is too long
+     * Precondition: 0 <= errors <= 3
+     */
+    public static int calcVersion(int chars, int error) {
+        int version = 1;
+        int currentCapacity = 0;
+        while(version < 42 && currentCapacity < chars) { //exits loop with version = 42 or one greater than min needed
+            currentCapacity = Encode.alphanumCapacityLookup(version)[error];
+            version++;
+        }
+        return version - 1;
+    }
+
+    /**
      * Given a version, returns an array with the alphanumeric character capacity of the error correcting levels
      * L, M, Q, & H respectively. E.g. alphanumCapacityLookup(1) --> [25, 20, 16, 10]
      * So the character capacity of version 1 w/ error correction level l is 25
