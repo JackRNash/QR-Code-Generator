@@ -68,7 +68,7 @@ public class Encode {
         encMsg.addAll(Binary.intToBinaryOfLength(s.length(), delim)); //Character count
         encMsg.addAll(encodeAlphaNum(s)); //Message
         int size = encMsg.size();
-        int[] blocks = LookUp.ecAndBlockLookup(version, ecLevel);
+        int[] blocks = LookUp.ecAndBlockLookUp(version, ecLevel);
 
         int numDataWords = blocks[1]*blocks[2] + blocks[3]*blocks[4];
         if(size + 4 < 19 * delim) { //for now, assume it's a 1-L QR code
@@ -139,7 +139,7 @@ public class Encode {
         int version = 1;
         int currentCapacity = 0;
         while(version < 42 && currentCapacity < chars) { //exits loop with version = 42 or one greater than min needed
-            currentCapacity = LookUp.alphanumCapacityLookup(version)[error];
+            currentCapacity = LookUp.alphanumCapacityLookUp(version)[error];
             version++;
         }
         return version - 1;

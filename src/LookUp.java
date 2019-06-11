@@ -7,6 +7,22 @@ public class LookUp {
      */
 
     /**
+     * Small lookup table for error correcting and mask information. Assumes first mask is used. If more masks
+     * are ever implemented, this MUST be updated
+     * Precondition: 0 <= ecLevel <= 3      (0, 1, 2, 3, represent EC levels L, M, Q, and H respectively)
+     */
+    public static ArrayList<Integer> ecMaskLookUp(int ecLevel) {
+        ArrayList<Integer> arr;
+        switch(ecLevel) {
+            case 3: arr = Encode.strToArrList("001011010001001"); break;
+            case 2: arr = Encode.strToArrList("011010101011111"); break;
+            case 1: arr = Encode.strToArrList("101010000010010"); break;
+            default: arr = Encode.strToArrList("111011111000100"); break; //ecLevel == 0
+        }
+        return arr;
+    }
+
+    /**
      * Lookup table for finding the number of blocks and number of data codewords per block, as well as the
      * number of error correcting codewords per block
      * Formatted as follows: [# EC codewords/block, # blocks in group 1, # data codewords in each of block of group 1,
@@ -15,7 +31,7 @@ public class LookUp {
      * Precondition: 0 <= ecLevel <= 3 (0, 1, 2, 3 represent L, M, Q, H respectively)
      *               1 <= version <= 40
      */
-    public static int[] ecAndBlockLookup(int version, int ecLevel) {
+    public static int[] ecAndBlockLookUp(int version, int ecLevel) {
         int[] arr = new int[5];
         switch(ecLevel) {
             case 0: //Error correction level L
@@ -59,7 +75,7 @@ public class LookUp {
                     case 37: arr = new int[] {30, 17, 122, 4, 123}; break;
                     case 38: arr = new int[] {30, 4, 122, 18, 123}; break;
                     case 39: arr = new int[] {30, 20, 117, 4, 118}; break;
-                    case 40: arr = new int[] {30, 19, 118, 6, 119}; break;
+                    case 40: arr = new int[] {30, 19, 118, 6, 119}; break; //last break for clarity, not needed
                 }
             case 1: //Error correction level M
                 switch(version) {
@@ -102,7 +118,7 @@ public class LookUp {
                     case 37: arr = new int[] {28, 29, 46, 14, 47}; break;
                     case 38: arr = new int[] {28, 13, 46, 32, 47}; break;
                     case 39: arr = new int[] {28, 40, 47, 7, 48}; break;
-                    case 40: arr = new int[] {28, 18, 47, 31, 48}; break;
+                    case 40: arr = new int[] {28, 18, 47, 31, 48}; break; //last break for clarity, not needed
                 }
             case 2: //Error correction level Q
                 switch(version) {
@@ -145,7 +161,7 @@ public class LookUp {
                     case 37: arr = new int[] {30, 49, 24, 10, 25}; break;
                     case 38: arr = new int[] {30, 48, 24, 14, 25}; break;
                     case 39: arr = new int[] {30, 43, 24, 22, 25}; break;
-                    case 40: arr = new int[] {30, 34, 24, 34, 25}; break;
+                    case 40: arr = new int[] {30, 34, 24, 34, 25}; break; //last break for clarity, not needed
                 }
             case 3: //Error correction level H
                 switch(version) {
@@ -188,7 +204,7 @@ public class LookUp {
                     case 37: arr = new int[] {30, 24, 15, 46, 16}; break;
                     case 38: arr = new int[] {30, 42, 15, 32, 16}; break;
                     case 39: arr = new int[] {30, 10, 15, 67, 16}; break;
-                    case 40: arr = new int[] {30, 20, 15, 61, 16}; break;
+                    case 40: arr = new int[] {30, 20, 15, 61, 16}; break; //last break for clarity, not needed
                 }
         }
         return arr;
@@ -198,7 +214,7 @@ public class LookUp {
      * A lookup method for finding the ArrayList associated with a given version number
      * Precondition: 7 <= version <= 40
      */
-    public static ArrayList<Integer> versionBinaryLookup(int version) {
+    public static ArrayList<Integer> versionBinaryLookUp(int version) {
         ArrayList<Integer> arr = new ArrayList<>();
         switch(version) {
             case 7: arr = Encode.strToArrList("000111110010010100"); break;
@@ -241,12 +257,12 @@ public class LookUp {
 
     /**
      * Given a version, returns an array with the alphanumeric character capacity of the error correcting levels
-     * L, M, Q, & H respectively. E.g. alphanumCapacityLookup(1) --> [25, 20, 16, 10]
+     * L, M, Q, & H respectively. E.g. alphanumCapacityLookUp(1) --> [25, 20, 16, 10]
      * So the character capacity of version 1 w/ error correction level l is 25
      * Unfortunately had to be hard coded, no formula exists(as far as I know)
      * Precondition: 1 <= version <= 41 (41 not a valid version #, just used for error purposes)
      */
-    public static int[] alphanumCapacityLookup(int version) {
+    public static int[] alphanumCapacityLookUp(int version) {
        int[] arr = new int[4];
 
        switch(version) {
@@ -300,10 +316,10 @@ public class LookUp {
      * formula for it). Given a version, returns an array of different ints and all POSSIBLE coordinates
      * of alignment patterns are all combinations of these numbers(remember if a finder pattern, timing belt etc.)
      * is in the way, the alignment pattern is not drawn
-     * E.g. alignmentLookup(2) = [6, 18] so all possible locations of alignment patterns are (6,6), (6,18), (18,6), (18,18)
+     * E.g. alignmentLookUp(2) = [6, 18] so all possible locations of alignment patterns are (6,6), (6,18), (18,6), (18,18)
      * Precondition: 2 <= verison <= 40 (version 1 has no alignment patterns)
      */
-    public static int[] alignmentLookup(int version) {
+    public static int[] alignmentLookUp(int version) {
         int[] arr = new int[0];
         switch(version) {
             case 2: arr = new int[] {6, 18}; break;

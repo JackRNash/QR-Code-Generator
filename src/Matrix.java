@@ -4,11 +4,13 @@ public class Matrix {
     // For constructing the matrix that represents the QR code and will eventually be fed into the GUI
     // 1 represents black, -1 represents white
     private int[][] mat;
+    private int version;
 
     /**
      * Creates the matrix associated with a QR code of specified size(min is 21)
      */
     public Matrix(int version) {
+        this.version = version;
         int size = 4*version + 17;
         mat = new int[size][size];
         addFinders();
@@ -18,6 +20,19 @@ public class Matrix {
 
     public int[][] getMatrix() {
         return mat;
+    }
+
+    public void makeQRCode(String message, ArrayList<Integer> encodeType, int ecLevel) {
+        addFinders();
+        addSeparators();
+        addAllAlignmentPats(version);
+        addTimingPats();
+
+        inputBinary(Encode.encodeMsg(message, encodeType, version, ecLevel));
+
+        addErrorCorrAndMaskInfo(LookUp.ecMaskLookUp(ecLevel));
+        addVersionInfo(version);
+        applyFirstMask();
     }
 
     /**
@@ -126,7 +141,7 @@ public class Matrix {
      * Adds all appropriate alignment patterns for a given version
      */
     public void addAllAlignmentPats(int version) {
-        int[] arr = LookUp.alignmentLookup(version);
+        int[] arr = LookUp.alignmentLookUp(version);
         for (int i : arr) {
             for (int j : arr) {
                 addAlignmentPat(i, j);
@@ -215,7 +230,6 @@ public class Matrix {
             } else {
                 i+= -1;
             }
-            //System.out.println("i: " + i + "\tj: " + j + "\tdirection: " + direction);
 
         }
     }
@@ -255,7 +269,7 @@ public class Matrix {
      */
     public void addVersionInfo(int version) {
         if(version < 7) return; //only input if version >= 7
-        ArrayList<Integer> arr = LookUp.versionBinaryLookup(version);
+        ArrayList<Integer> arr = LookUp.versionBinaryLookUp(version);
         //note that arr.size() == 18 (hence arr.size() - 1 == 17 which is used in the following code)
         //input top right version info
         for(int i = 0; i < 6; i++) {
