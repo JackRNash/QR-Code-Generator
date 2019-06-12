@@ -80,6 +80,8 @@ public class Encode {
             encMsg.addAll(new ArrayList<>(Collections.nCopies(19*delim - size, 0)));
         }
 
+        System.out.println("version: "  + version);
+
 
         //if the encoded message doesn't fill up n delimited blocks of binary, append zeroes until it does
         //int num = encMsg.size()/8;
@@ -102,9 +104,11 @@ public class Encode {
         int j = 0;
         for(int k = 0; k < blocks[1]; k++) {
             groups.add(new ArrayList<>(encMsg.subList(j, j + blocks[2] * 8)));
+            j += blocks[2] * 8;
         }
         for(int k = 0; k < blocks[3]; k++) {
             groups.add(new ArrayList<>(encMsg.subList(j, j + blocks[4] * 8)));
+            j += blocks[4] * 8;
         }
 
         //Make master list of all messages(one for each block) w/ numbers in decimal form
