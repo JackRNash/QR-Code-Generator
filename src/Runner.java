@@ -14,8 +14,11 @@ public class Runner {
 //        m.addErrorCorrAndMaskInfo(Encode.strToArrList("111011111000100"));
 //        m.inputBinary(nums2);
 //        m.applyFirstMask();
-        Matrix m = new Matrix(1);
-        m.makeQRCode("ABCDEFGHIJKLMOPQRSTUVWXY", Encode.strToArrList("0010"), 0);
+        String msg = "Hello world";
+        int ecLevel = 3;
+
+        Matrix m = new Matrix(Encode.calcVersion(msg.length(), ecLevel));
+        m.makeQRCode(msg, Encode.strToArrList("0010"), ecLevel);
         new GUI(m.getMatrix());
 
     }

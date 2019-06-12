@@ -70,44 +70,94 @@ public class Encode {
         int size = encMsg.size();
         int[] blocks = LookUp.ecAndBlockLookUp(version, ecLevel);
 
-        int numDataWords = blocks[1]*blocks[2] + blocks[3]*blocks[4];
-        if(size + 4 < 19 * delim) { //for now, assume it's a 1-L QR code
-            encMsg.addAll(new ArrayList<>(Collections.nCopies(4, 0))); //Terminator, TO IMPLEMENT: no terminator when at capacity
-        } else if(size < 19 * delim) { //room for some of the terminator, but not all of it, so add as many as possible
+        int dataWords = blocks[1]*blocks[2] + blocks[3]*blocks[4];
+//        System.out.println("version: " + version + "\tecLevel: " + ecLevel);
+//        System.out.println("blocks[1]: " + blocks[1] + "\tblocks[2]: " + blocks[2] + "\tblocks[3]: " + blocks[3]);
+//        System.out.println("data words: " + dataWords);
+        if(size + 4 < dataWords * delim) {
+            encMsg.addAll(new ArrayList<>(Collections.nCopies(4, 0))); //Terminator, no terminator when at capacity
+        } else if(size < dataWords * delim) { //room for some of the terminator, but not all of it, so add as many as possible
             encMsg.addAll(new ArrayList<>(Collections.nCopies(19*delim - size, 0)));
         }
 
 
         //if the encoded message doesn't fill up n delimited blocks of binary, append zeroes until it does
-        int num = encMsg.size()/8;
-        while(encMsg.size() < (num + 1)*8) {
+        //int num = encMsg.size()/8;
+        //while(encMsg.size() < (num + 1)*8) { //unclear how this handles edge cases
+        while(encMsg.size() % 8 != 0) {
             encMsg.add(0);
         }
 
-        //TO IMPLEMENT: if enc msg isn't at capacity, fill with alternating 11101100 & 00010001
-        //for now, assume 1-L QR code
+        //If enc msg isn't at capacity, fill with alternating 11101100 & 00010001
         ArrayList<Integer> one = strToArrList("11101100"); ArrayList<Integer> two = strToArrList("00010001");
-        while(encMsg.size()/8 < 19) {
+        while(encMsg.size()/8 < dataWords) {
             encMsg.addAll(one);
-            if(encMsg.size()/8 < 19) {
+            if(encMsg.size()/8 < dataWords) {
                 encMsg.addAll(two);
             }
         }
-        //Create ArrayList of message, converted from binary to decimal form
-        ArrayList<Integer> msgArrList = new ArrayList<>();
-        int[] msgArr = Binary.binaryToIntDelim(encMsg, 8);
-        for(int i = 0; i < msgArr.length; i++) {
-            msgArrList.add(msgArr[i]);
+
+        //Create appropriate blocks(each block is an ArrayList in groups, stored in order)
+        ArrayList<ArrayList<Integer>> groups = new ArrayList<>();
+        int j = 0;
+        for(int k = 0; k < blocks[1]; k++) {
+            groups.add(new ArrayList<>(encMsg.subList(j, j + blocks[2] * 8)));
+        }
+        for(int k = 0; k < blocks[3]; k++) {
+            groups.add(new ArrayList<>(encMsg.subList(j, j + blocks[4] * 8)));
         }
 
-        //TO FINISH: find error correcting codes, append (Need method for finding num of errors to correct)
+        //Make master list of all messages(one for each block) w/ numbers in decimal form
+        ArrayList<ArrayList<Integer>> msgArrListGroups = new ArrayList<>();
+        for(ArrayList<Integer> msgBlock: groups) {
+            //Create ArrayList of message, converted from binary to decimal form
+            ArrayList<Integer> msgArrList = new ArrayList<>();
+            int[] msgArr = Binary.binaryToIntDelim(msgBlock, 8);
+            for (int i = 0; i < msgArr.length; i++) {
+                msgArrList.add(msgArr[i]);
+            }
+            msgArrListGroups.add(msgArrList);
+        }
+
+        //Make master list of all error correcting codes(one for each block) w/ numbers in decimal form
         ErrorCorrection ec = new ErrorCorrection();
-        int[] arr = ec.genErrorCorrWords(7, msgArrList);
-        for(int i = arr.length - 1; i >= 0; i--) {
-            encMsg.addAll(Binary.intToBinaryOfLength(arr[i], 8));
+        ArrayList<ArrayList<Integer>> ecWordsGroups = new ArrayList<>();
+        for(ArrayList<Integer> msgArrList: msgArrListGroups) {
+            //Find error correcting codes
+            int[] arr = ec.genErrorCorrWords(blocks[0], msgArrList);
+            ArrayList<Integer> ecWords = new ArrayList<>();
+            for (int i = arr.length - 1; i >= 0; i--) {
+                ecWords.addAll(Binary.intToBinaryOfLength(arr[i], 8));
+            }
+            ecWordsGroups.add(ecWords);
         }
 
-        return encMsg;
+        //Interleave the msg words
+        ArrayList<Integer> finalMessage = new ArrayList<>();
+        int maxLen = Math.max(blocks[2], blocks[4]); //most amount of numbers in a block
+        for(int k = 0; k < maxLen; k++) {
+            for(ArrayList<Integer> msgBlock: groups) {
+                //Go through each block and append next word
+                if(msgBlock.size() > k * 8) {
+                    finalMessage.addAll(new ArrayList<>(msgBlock.subList(k*8, (k+1) * 8)));
+                }
+            }
+        }
+
+        //Interleave the error correcting words(same process as message words, comes after)
+        for(int k = 0; k < blocks[0]; k++) { //every block has same amount of EC words
+            for(ArrayList<Integer> ecWords: ecWordsGroups) {
+                finalMessage.addAll(new ArrayList<>(ecWords.subList(k*8, (k+1) * 8)));
+            }
+        }
+
+        //Add remainder bits(if necessary)
+        int rem = LookUp.remainderBitsLookUp(version);
+        for(int i = 0; i < rem; i++) {
+            finalMessage.add(0);
+        }
+
+        return finalMessage;
     }
 
     /**

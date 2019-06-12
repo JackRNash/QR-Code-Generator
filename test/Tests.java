@@ -175,20 +175,22 @@ class Tests {
         ArrayList<Integer> msg = new ArrayList<>();
         msg.add(32); msg.add(91); msg.add(11); msg.add(120); msg.add(209); msg.add(114); msg.add(220); msg.add(77);
         msg.add(67); msg.add(64); msg.add(236); msg.add(17); msg.add(236); msg.add(17); msg.add(236); msg.add(17);
-        //System.out.println(msg);
-        int[] msgArr = ec.genErrorCorrWords(10, msg);
-//        for(int i = 0; i < msgArr.length; i++) {
-//            System.out.println(msgArr[i]);
-//        }
-        int[] test = {23, 93, 226, 231, 215, 235, 119, 39, 35, 196};
-        assertArrs(test, msgArr);
 
+//        int[] msgArr = ec.genErrorCorrWords(10, msg);
+//
+//        int[] test = {23, 93, 226, 231, 215, 235, 119, 39, 35, 196};
+//        assertArrs(test, msgArr);
 
-//        ArrayList<Integer> msg2 = new ArrayList<>();
-//        msg2.add()
-//        for(int i = 0; i < msgArr2.length; i++) {
-//            System.out.println(msgArr2[i]);
-//        }
+        ArrayList<Integer> msg2 = new ArrayList<>();
+        msg2.add(32); msg2.add(65); msg2.add(205); msg2.add(69); msg2.add(41); msg2.add(220); msg2.add(46);
+        msg2.add(128); msg2.add(236);
+        int[] test2 = {61, 219, 74, 96, 224, 85, 237, 70, 138, 150, 239, 169, 244, 221, 74, 159, 42};
+
+        int[] msgArr2 = ec.genErrorCorrWords(17, msg2);
+        for(int i: msgArr2) System.out.println(i);
+
+        assertArrs(test2, msgArr2);
+
     }
 
 

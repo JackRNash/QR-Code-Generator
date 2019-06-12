@@ -13,15 +13,19 @@ public class Matrix {
         this.version = version;
         int size = 4*version + 17;
         mat = new int[size][size];
-        addFinders();
-        addSeparators();
-        addTimingPats();
     }
 
     public int[][] getMatrix() {
         return mat;
     }
 
+    /**
+     * Method to use to make a QR code.
+     * String message: message to send
+     * ArrayList<Integer> encodeType: type of encoding(alphanumeric, kanji etc.) in QR specifications format that
+     * message should be encoded as
+     * int ecLevel: Error correction level where 0, 1, 2, 3 correspond to L, M, Q, H respectively
+     */
     public void makeQRCode(String message, ArrayList<Integer> encodeType, int ecLevel) {
         addFinders();
         addSeparators();

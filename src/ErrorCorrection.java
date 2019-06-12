@@ -49,7 +49,7 @@ public class ErrorCorrection {
      */
     public int[] genErrorCorrWords(int errors, ArrayList<Integer> message) {
         int[] genPoly = genPoly(errors);
-        int[] msgPoly = new int[Math.max(genPoly.length, message.size())];
+        int[] msgPoly = new int[message.size()];
         for(int i = 0; i < message.size(); i++) { //convert to array polynomial format
             msgPoly[msgPoly.length - 1 - i] = message.get(i);
         }

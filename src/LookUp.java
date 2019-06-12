@@ -3,12 +3,54 @@ import java.util.ArrayList;
 public class LookUp {
     /*
      A class containing lookup methods, kept separate from the rest of the code. Unfortunately, a lot of the QR
-     specifications seem to demand tables(no obvious formulas and didn't find any Google-ing)
+     specifications seem to demand tables(no obvious formulas and didn't find any Google-ing). Breaks at end of switches
+     obviously not necessary, just included for clarity
      */
 
+    public static int remainderBitsLookUp(int version) {
+        int rem = 0;
+
+        switch(version) {
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+                rem = 7;
+                break;
+            case 14:
+            case 15:
+            case 16:
+            case 17:
+            case 18:
+            case 19:
+            case 20:
+            case 28:
+            case 29:
+            case 30:
+            case 31:
+            case 32:
+            case 33:
+            case 34:
+                rem = 3;
+                break;
+            case 21:
+            case 22:
+            case 23:
+            case 24:
+            case 25:
+            case 26:
+            case 27:
+                rem = 4;
+                break;
+        }
+
+        return rem;
+    }
+
     /**
-     * Small lookup table for error correcting and mask information. Assumes first mask is used. If more masks
-     * are ever implemented, this MUST be updated
+     * Small lookup table for error correcting and mask information to be encoded in the QR code. Assumes first mask is
+     * used. If more masks are implemented, this MUST be updated
      * Precondition: 0 <= ecLevel <= 3      (0, 1, 2, 3, represent EC levels L, M, Q, and H respectively)
      */
     public static ArrayList<Integer> ecMaskLookUp(int ecLevel) {
@@ -77,6 +119,8 @@ public class LookUp {
                     case 39: arr = new int[] {30, 20, 117, 4, 118}; break;
                     case 40: arr = new int[] {30, 19, 118, 6, 119}; break; //last break for clarity, not needed
                 }
+                break;
+
             case 1: //Error correction level M
                 switch(version) {
                     case 1: arr = new int[] {10, 1, 16, 0, 0 }; break;
@@ -120,6 +164,8 @@ public class LookUp {
                     case 39: arr = new int[] {28, 40, 47, 7, 48}; break;
                     case 40: arr = new int[] {28, 18, 47, 31, 48}; break; //last break for clarity, not needed
                 }
+                break;
+
             case 2: //Error correction level Q
                 switch(version) {
                     case 1: arr = new int[] {13, 1, 13, 0, 0}; break;
@@ -163,6 +209,8 @@ public class LookUp {
                     case 39: arr = new int[] {30, 43, 24, 22, 25}; break;
                     case 40: arr = new int[] {30, 34, 24, 34, 25}; break; //last break for clarity, not needed
                 }
+                break;
+
             case 3: //Error correction level H
                 switch(version) {
                     case 1: arr = new int[] {17, 1, 9, 0, 0}; break;
@@ -206,6 +254,7 @@ public class LookUp {
                     case 39: arr = new int[] {30, 10, 15, 67, 16}; break;
                     case 40: arr = new int[] {30, 20, 15, 61, 16}; break; //last break for clarity, not needed
                 }
+                break;
         }
         return arr;
     }
