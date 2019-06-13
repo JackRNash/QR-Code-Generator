@@ -1,7 +1,7 @@
 # QR-Code-Generator
 A QR code generator built from scratch in Java.
 
-![Example QR code](https://i.imgur.com/uLuj3mp.png)
+![Example QR code](https://i.imgur.com/b1wQGxk.png)
 ###### An example QR code generated with my program
 
 
@@ -36,8 +36,8 @@ Matrix Generation
 
 Masks
 - [x] Apply 1st mask properly
-- [ ] Add methods for other masks
-- [ ] Add the tests required to check which mask is best for a given code, and select that mask
+- [x] Add methods for other masks
+- [x] Add the tests required to check which mask is best for a given code, and select that mask
 
 GUI
 - [x] Given a matrix, draw associated grid of colored squares
