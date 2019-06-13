@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class GUI extends JFrame {
     public static final int SQUARE_SIZE = 20; //size of a block in QR code in pixels
-    private int[][] quietMat; //stores the QR code as an n x n matrix of zeroes and ones
 
     public GUI(int[][] matrix) {
         super("QR Code");

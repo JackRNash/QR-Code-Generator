@@ -32,10 +32,12 @@ public class Matrix {
         addAllAlignmentPats(version);
         addTimingPats();
 
-        inputBinary(Encode.encodeMsg(message, encodeType, version, ecLevel));
-
         addErrorCorrAndMaskInfo(LookUp.ecMaskLookUp(ecLevel));
         addVersionInfo(version);
+
+        inputBinary(Encode.encodeMsg(message, encodeType, version, ecLevel));
+
+
         applyFirstMask();
     }
 
@@ -205,7 +207,6 @@ public class Matrix {
         int index = 1; int i = mat.length - 1 - 1; int j = mat.length - 1;
         int direction = -1; //-1 for up, +1 for down
         int len = binary.size();
-
         if(mat[i+1][j] == 0 && len > 0) mat[i + 1][j] = binaryToColor(binary.get(0)); //skipped over by structure of while loop
         else index = 0;
 

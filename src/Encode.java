@@ -80,8 +80,6 @@ public class Encode {
             encMsg.addAll(new ArrayList<>(Collections.nCopies(19*delim - size, 0)));
         }
 
-        System.out.println("version: "  + version);
-
 
         //if the encoded message doesn't fill up n delimited blocks of binary, append zeroes until it does
         //int num = encMsg.size()/8;
