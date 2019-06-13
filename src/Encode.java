@@ -71,9 +71,6 @@ public class Encode {
         int[] blocks = LookUp.ecAndBlockLookUp(version, ecLevel);
 
         int dataWords = blocks[1]*blocks[2] + blocks[3]*blocks[4];
-//        System.out.println("version: " + version + "\tecLevel: " + ecLevel);
-//        System.out.println("blocks[1]: " + blocks[1] + "\tblocks[2]: " + blocks[2] + "\tblocks[3]: " + blocks[3]);
-//        System.out.println("data words: " + dataWords);
         if(size + 4 < dataWords * delim) {
             encMsg.addAll(new ArrayList<>(Collections.nCopies(4, 0))); //Terminator, no terminator when at capacity
         } else if(size < dataWords * delim) { //room for some of the terminator, but not all of it, so add as many as possible

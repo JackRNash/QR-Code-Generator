@@ -55,6 +55,7 @@ class Cell extends JPanel{
             if (mat[i][j] == 1 || mat[i][j] == 2) g.setColor(Color.black);
             else if(mat[i][j] == -1 || mat[i][j] == -2) g.setColor(Color.white);
             else if(mat[i][j] == 3) g.setColor(Color.orange); //non black/white colors for debugging purposes
+            else if(mat[i][j] == -3) g.setColor(Color.yellow);
             else g.setColor(Color.lightGray);
             g2.fill(rec);
         }

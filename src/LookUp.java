@@ -53,13 +53,65 @@ public class LookUp {
      * used. If more masks are implemented, this MUST be updated
      * Precondition: 0 <= ecLevel <= 3      (0, 1, 2, 3, represent EC levels L, M, Q, and H respectively)
      */
-    public static ArrayList<Integer> ecMaskLookUp(int ecLevel) {
+    public static ArrayList<Integer> ecMaskLookUp(int ecLevel, int mask) {
         ArrayList<Integer> arr;
-        switch(ecLevel) {
-            case 3: arr = Encode.strToArrList("001011010001001"); break;
-            case 2: arr = Encode.strToArrList("011010101011111"); break;
-            case 1: arr = Encode.strToArrList("101010000010010"); break;
-            default: arr = Encode.strToArrList("111011111000100"); break; //ecLevel == 0
+        switch(mask) {
+            default: //case 0
+                switch(ecLevel) {
+                    case 3: arr = Encode.strToArrList("001011010001001"); break;
+                    case 2: arr = Encode.strToArrList("011010101011111"); break;
+                    case 1: arr = Encode.strToArrList("101010000010010"); break;
+                    default: arr = Encode.strToArrList("111011111000100"); break; //ecLevel == 0
+                } break;
+            case 1:
+                switch(ecLevel) {
+                    case 3: arr = Encode.strToArrList("001001110111110"); break;
+                    case 2: arr = Encode.strToArrList("011000001101000"); break;
+                    case 1: arr = Encode.strToArrList("101000100100101"); break;
+                    default: arr = Encode.strToArrList("111001011110011"); break; //ecLevel == 0
+                } break;
+            case 2:
+                switch(ecLevel) {
+                    case 3: arr = Encode.strToArrList("001110011100111"); break;
+                    case 2: arr = Encode.strToArrList("011111100110001"); break;
+                    case 1: arr = Encode.strToArrList("101111001111100"); break;
+                    default: arr = Encode.strToArrList("111110110101010"); break; //ecLevel == 0
+                } break;
+            case 3:
+                switch(ecLevel) {
+                    case 3: arr = Encode.strToArrList("001100111010000"); break;
+                    case 2: arr = Encode.strToArrList("011101000000110"); break;
+                    case 1: arr = Encode.strToArrList("101101101001011"); break;
+                    default: arr = Encode.strToArrList("111100010011101"); break; //ecLevel == 0
+                } break;
+            case 4:
+                switch(ecLevel) {
+                    case 3: arr = Encode.strToArrList("000011101100010"); break;
+                    case 2: arr = Encode.strToArrList("010010010110100"); break;
+                    case 1: arr = Encode.strToArrList("100010111111001"); break;
+                    default: arr = Encode.strToArrList("110011000101111"); break; //ecLevel == 0
+                } break;
+            case 5:
+                switch(ecLevel) {
+                    case 3: arr = Encode.strToArrList("000001001010101"); break;
+                    case 2: arr = Encode.strToArrList("010000110000011"); break;
+                    case 1: arr = Encode.strToArrList("100000011001110"); break;
+                    default: arr = Encode.strToArrList("110001100011000"); break; //ecLevel == 0
+                } break;
+            case 6:
+                switch(ecLevel) {
+                    case 3: arr = Encode.strToArrList("000110100001100"); break;
+                    case 2: arr = Encode.strToArrList("010111011011010"); break;
+                    case 1: arr = Encode.strToArrList("100111110010111"); break;
+                    default: arr = Encode.strToArrList("110110001000001"); break; //ecLevel == 0
+                } break;
+            case 7:
+                switch(ecLevel) {
+                    case 3: arr = Encode.strToArrList("000100000111011"); break;
+                    case 2: arr = Encode.strToArrList("010101111101101"); break;
+                    case 1: arr = Encode.strToArrList("100101010100000"); break;
+                    default: arr = Encode.strToArrList("110100101110110"); break; //ecLevel == 0
+                } break;
         }
         return arr;
     }

@@ -32,13 +32,15 @@ public class Matrix {
         addAllAlignmentPats(version);
         addTimingPats();
 
-        addErrorCorrAndMaskInfo(LookUp.ecMaskLookUp(ecLevel));
+        int mask = 7;
+        addErrorCorrAndMaskInfo(LookUp.ecMaskLookUp(ecLevel, mask));
         addVersionInfo(version);
 
         inputBinary(Encode.encodeMsg(message, encodeType, version, ecLevel));
 
 
-        applyFirstMask();
+        applyMask(mask);
+        System.out.println(maskTest(mat));
     }
 
     /**
@@ -240,15 +242,179 @@ public class Matrix {
     }
 
     /**
-     * Applies the first mask
+     * Applies the specified mask type
+     * Precondition: 0 <= type <= 7
      */
-    public void applyFirstMask() {
-        for(int i = 0; i < mat.length; i++) {
-            for(int j = 0; j < mat.length; j++) {
-                if((i + j) % 2 == 0 && (mat[i][j] == 1 || mat[i][j] == -1)) mat[i][j] *= -1;
+    public void applyMask(int type) {
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < mat.length; j++) {
+                if (mat[i][j] == 1 || mat[i][j] == -1) { //only 1 or -1 if part of the message(skips over finder pat etc.)
+                    if ((type == 0 && (i + j) % 2 == 0)
+                            || (type == 1 && j % 2 == 0)
+                            || (type == 2 && i % 3 == 0)
+                            || (type == 3 && (i + j) % 3 == 0)
+                            || (type == 4 && (Math.floor(j / 2) + Math.floor(i / 3)) % 2 == 0)
+                            || (type == 5 && (i * j) % 2 + (i * j) % 3 == 0)
+                            || (type == 6 && ((i * j) % 2 + (i * j) % 3) % 2 == 0)
+                            || (type == 7 && ((i + j) % 2 + (i * j) % 3) % 2 == 0)) {
+                        mat[i][j] *= -1; //flip from black to white or white to black
+                    }
+                }
             }
         }
     }
+
+    /**
+     * Applies the four tests of a mask to the input matrix(mask applied already) and returns the score
+     * Matrix should therefore be square
+     */
+    public int maskTest(int[][] m) {
+        int sum = 0;
+
+        //Test 1: If 5 of same color in a row, add 3, and add 1 more for every additional tile
+        for(int i = 0; i < m.length; i++) {
+            for(int j = 0; j < m.length - 4; j++) {
+                if(isSameColor(m[i][j], m[i][j+1], m[i][j+2], m[i][j+3], m[i][j+4])) {
+//                    if(matrix[i][j] > 0) {
+//                        matrix[i][j] = 3;
+//                        matrix[i][j+1] = 3;
+//                        matrix[i][j+2] = 3;
+//                        matrix[i][j+3] = 3;
+//                        matrix[i][j+4] = 3;
+//                    } else {
+//                        matrix[i][j] = -3;
+//                        matrix[i][j+1] = -3;
+//                        matrix[i][j+2] = -3;
+//                        matrix[i][j+3] = -3;
+//                        matrix[i][j+4] = -3;
+//                    }
+                    sum += 3;
+                    int temp = j+4;
+                    while((j + 5 < m.length) && isSameColor(m[i][temp], m[i][j+5])) {
+//                        if(matrix[i][j+5] > 0) matrix[i][j+5] = 3;
+//                        else matrix[i][j+5] = -3;
+                        sum += 1;
+                        j++;
+                    }
+                }
+            }
+        }
+        for(int j = 0; j < m.length; j++) {
+            for(int i = 0; i < m.length - 4; i++) {
+                if(isSameColor(m[i][j], m[i+1][j], m[i+2][j], m[i+3][j], m[i+4][j])) {
+//                    if(matrix[i][j] > 0) {
+//                        matrix[i][j] = 3;
+//                        matrix[i+1][j] = 3;
+//                        matrix[i+2][j] = 3;
+//                        matrix[i+3][j] = 3;
+//                        matrix[i+4][j] = 3;
+//                    } else {
+//                        matrix[i][j] = -3;
+//                        matrix[i+1][j] = -3;
+//                        matrix[i+2][j] = -3;
+//                        matrix[i+3][j] = -3;
+//                        matrix[i+4][j] = -3;
+//                    }
+
+                    sum += 3;
+                    int temp = i+4;
+                    while((i + 5 < m.length) && isSameColor(m[temp][j], m[i+5][j])) {
+//                        if(matrix[i+5][j] > 0) matrix[i+5][j] = 3;
+//                        else matrix[i+5][j] = -3;
+                        sum += 1;
+                        i++;
+                    }
+                }
+            }
+        }
+
+        //Test 2: Penalty for each 2x2 block of same color
+        for(int i = 0; i < m.length - 1; i++) {
+            for(int j = 0; j < m.length - 1; j++) {
+                if(isSameColor(m[i][j], m[i+1][j], mat[i][j+1], m[i+1][j+1])) {
+//                    if(matrix[i][j] > 0) {
+//                        matrix[i][j] = 3;
+//                        matrix[i+1][j] = 3;
+//                        matrix[i+1][j+1] = 3;
+//                        matrix[i][j+1] = 3;
+//                    } else {
+//                        matrix[i][j] = -3;
+//                        matrix[i+1][j] = -3;
+//                        matrix[i+1][j+1] = -3;
+//                        matrix[i][j+1] = -3;
+//                    }
+                    sum += 3;
+                }
+            }
+        }
+
+        //Test 3: Big penalty for pattern [B, W, B, B, B, W, B, W, W, W, W] or reverse
+        for(int i = 0; i < m.length; i++) {
+            for(int j = 0; j < m.length - 9; j++) {
+                if((m[i][j] > 0 && m[i][j+1] < 0 && m[i][j+2] > 0 && m[i][j+3] > 0 && m[i][j+4] > 0 && m[i][j+5] < 0
+                && m[i][j+6] > 0 && m[i][j+7] < 0 && m[i][j+8] < 0 && m[i][j+9] < 0 && m[i][j+10] < 0) ||
+                (m[i][j] < 0 && m[i][j+1] < 0 && m[i][j+2] < 0 && m[i][j+3] < 0 && m[i][j+4] > 0 && m[i][j+5] < 0
+                && m[i][j+6] > 0 && m[i][j+7] > 0 && m[i][j+8] > 0 && m[i][j+9] < 0 && m[i][j+10] > 0)) {
+                    sum += 40;
+                }
+            }
+        }
+        for(int j = 0; j < m.length; j++) {
+            for(int i = 0; i < m.length - 9; i++) {
+                if((m[i][j] > 0 && m[i+1][j] < 0 && m[i+2][j] > 0 && m[i+3][j] > 0 && m[i+4][j] > 0 && m[i+5][j] < 0
+                        && m[i+6][j] > 0 && m[i+7][j] < 0 && m[i+8][j] < 0 && m[i+9][j] < 0 && m[i+10][j] < 0) ||
+                        (m[i][j] < 0 && m[i+1][j] < 0 && m[i+2][j] < 0 && m[i+3][j] < 0 && m[i+4][j] > 0 && m[i+5][j] < 0
+                                && m[i+6][j] > 0 && m[i+7][j] > 0 && m[i+8][j] > 0 && m[i+9][j] < 0 && m[i+10][j] > 0)) {
+                    sum += 40;
+                }
+            }
+        }
+
+        //Test 4: Penalty based on weird ratio of black to white modules
+        int totalSqrs = m.length * m.length;
+        int darkSqrs = 0;
+        for(int i = 0; i < m.length; i++) {
+            for(int j = 0; j < m.length; j++) {
+                if(m[i][j] > 0) darkSqrs++;
+            }
+        }
+        int ratio = 100 * darkSqrs / totalSqrs;
+        int lower = ratio/5;
+        int upper = lower + 1;
+        sum += 10 * Math.min(Math.abs(5*lower - 50)/5, Math.abs(5*upper - 50)/5);
+
+
+        return sum;
+    }
+
+    /**
+     * Helper method to compare two colors(since using 2 to denote a special black and 1 to also denote black & similar
+     * for white), need a way of checking if two squares are the same color that's more involved than a == b
+     */
+    public boolean isSameColor(int a, int b) {
+        if(a > 0 && b > 0) return true;
+        if(a < 0 && b < 0) return true;
+        return false;
+    }
+
+    /**
+     * Same as other isSameColor, just checks that all 4 variables are the same color
+     */
+    public boolean isSameColor(int a, int b, int c, int d) {
+        if(a > 0 && b > 0 && c > 0 && d > 0) return true;
+        if(a < 0 && b < 0 && c < 0 && d < 0) return true;
+        return false;
+    }
+
+    /**
+     * Same as other isSameColor, just checks that all 5 variables are the same color
+     */
+    public boolean isSameColor(int a, int b, int c, int d, int e) {
+        if(a > 0 && b > 0 && c > 0 && d > 0 && e > 0) return true;
+        if(a < 0 && b < 0 && c < 0 && d < 0 && e < 0) return true;
+        return false;
+    }
+
 
     /**
      * Helper method for coloring the graph(for the encoded message)
