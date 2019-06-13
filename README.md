@@ -16,7 +16,7 @@ Encoding
 - [x] Turn alphanumeric strings into appropriate sequence of numbers
 - [x] Converts integers to a fixed length binary representation(and convert those back to ints)
 - [x] Implement interleaving of blocks to add support for longer alphanumeric messages
-- [ ] Fix QR code generation for exceptionally large messages
+- [x] Fix QR code generation for exceptionally large messages
 - [ ] Add support for encoding 8-bit messages
 
 Error Correction
