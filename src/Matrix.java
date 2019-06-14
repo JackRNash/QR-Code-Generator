@@ -32,15 +32,14 @@ public class Matrix {
         addAllAlignmentPats(version);
         addTimingPats();
 
-        int mask = 7;
+        int mask = bestMask();
         addErrorCorrAndMaskInfo(LookUp.ecMaskLookUp(ecLevel, mask));
         addVersionInfo(version);
 
         inputBinary(Encode.encodeMsg(message, encodeType, version, ecLevel));
 
 
-        applyMask(mask);
-        System.out.println(maskTest(mat));
+        applyMask(mask, mat);
     }
 
     /**
@@ -242,13 +241,13 @@ public class Matrix {
     }
 
     /**
-     * Applies the specified mask type
+     * Applies the specified mask type on the input matrix
      * Precondition: 0 <= type <= 7
      */
-    public void applyMask(int type) {
-        for (int i = 0; i < mat.length; i++) {
-            for (int j = 0; j < mat.length; j++) {
-                if (mat[i][j] == 1 || mat[i][j] == -1) { //only 1 or -1 if part of the message(skips over finder pat etc.)
+    public void applyMask(int type, int[][] m) {
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m.length; j++) {
+                if (m[i][j] == 1 || m[i][j] == -1) { //only 1 or -1 if part of the message(skips over finder pat etc.)
                     if ((type == 0 && (i + j) % 2 == 0)
                             || (type == 1 && j % 2 == 0)
                             || (type == 2 && i % 3 == 0)
@@ -257,11 +256,29 @@ public class Matrix {
                             || (type == 5 && (i * j) % 2 + (i * j) % 3 == 0)
                             || (type == 6 && ((i * j) % 2 + (i * j) % 3) % 2 == 0)
                             || (type == 7 && ((i + j) % 2 + (i * j) % 3) % 2 == 0)) {
-                        mat[i][j] *= -1; //flip from black to white or white to black
+                        m[i][j] *= -1; //flip from black to white or white to black
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Returns the mask # that scores the lowest on the four tests
+     * */
+    public int bestMask() {
+        int min = Integer.MAX_VALUE;
+        int index = 0;
+        for(int i = 0; i < 8; i++) {
+            int[][] m = mat.clone();
+            applyMask(i, m);
+            int score = maskTest(m);
+            if(score < min) {
+                min = score;
+                index = i;
+            }
+        }
+        return index;
     }
 
     /**
