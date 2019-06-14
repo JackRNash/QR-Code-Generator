@@ -42,9 +42,10 @@ Masks
 GUI
 - [x] Given a matrix, draw associated grid of colored squares
 - [x] Add the quiet spaces around the QR code
-- [ ] Add an input GUI
-     - [ ] Slider for error correction level
-     - [ ] Input box for message with user-error detection
+- [x] Add an input GUI
+     - [x] Slider for error correction level
+     - [x] Input box for message with user-error detection
+- [ ] Make GUI much prettier
      
 Lookup Tables
 - [x] Error correction level and mask information encoded for QR code
@@ -55,7 +56,11 @@ Lookup Tables
 
 The lookup tables, it's worth noting, were unfortunately almost all neccessary. The one for encoded version information and the one for encoded error correction & mask level could've been generated with a function, but they were so small and writing the function(as well as testing and debugging it) would've taken long enough that it was quicker to just hard code it. Tragically, the other, *much larger*,  look up tables were all required as there's no formula for generating the numbers in them.
 
-
+### Notes for future work
+- Strange bug with exceptionally large messages(version > 7), haven't investigated thoroughly, but also possible that standard QR readers don't read these large messages well(unlikely). Very far outside typical use case, so not bothering with right now
+- Bugs typically come from generating the error correcting code words and weird stuff happening there, look at that quick if there's a bug
+- If want to implement case sensitive encoding, must encode 8 bit messages
+- Make the GUI look nicer(dealing with GUIs are a pain and it's functional, so I stopped here)
 
 ### Resources
 I used the following resources as references:
