@@ -11,9 +11,10 @@ public class MenuGUI extends JFrame implements ActionListener {
     private JTextArea msgTxt;
     private int ecLevel;
     private JSlider slider;
+    private JFrame frame;
 
     public MenuGUI() {
-        JFrame frame = new JFrame("QR Code Generator");
+        frame = new JFrame("QR Code Generator");
         JPanel pane = new JPanel();
         pane.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -36,7 +37,7 @@ public class MenuGUI extends JFrame implements ActionListener {
         c.ipady = 0;
         pane.add(msg, c);
 
-        msgTxt = new JTextArea(5, 5);
+        msgTxt = new JTextArea(2, 2);
         msgTxt.setLineWrap(true);
         c.gridx = 0;
         c.gridy = 2;
@@ -91,9 +92,16 @@ public class MenuGUI extends JFrame implements ActionListener {
         if(e.getSource() == button) {
             msg = msgTxt.getText();
             ecLevel = slider.getValue();
-            Matrix m = new Matrix(Encode.calcVersion(msg.length(), ecLevel));
-            m.makeQRCode(msg, Encode.strToArrList("0010"), ecLevel);
-            new QRCodeGUI(m.getMatrix());
+            int version = Encode.calcVersion(msg.length(), ecLevel);
+            if(version > 40) {
+                JOptionPane.showMessageDialog(frame, "Your message is too long for your selected error " +
+                        "correction level. \nEither make your message shorter or lower your selected error correction " +
+                        "level.", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                Matrix m = new Matrix(version);
+                m.makeQRCode(msg, Encode.strToArrList("0010"), ecLevel);
+                new QRCodeGUI(m.getMatrix());
+            }
         }
     }
 }
