@@ -1,4 +1,5 @@
 # QR-Code-Generator
+##### by Jack Nash
 A QR code generator built from scratch in Java.
 
 ![Example QR code](https://i.imgur.com/b1wQGxk.png)
